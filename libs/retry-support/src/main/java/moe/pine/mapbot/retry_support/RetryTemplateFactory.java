@@ -14,22 +14,22 @@ import java.util.stream.Stream;
 public class RetryTemplateFactory {
     @SafeVarargs
     public static RetryTemplate create(
-        final int maxAttempts,
-        final long initialInterval,
-        final double multiplier,
-        final Class<? extends Throwable>... exceptions
+        int maxAttempts,
+        long initialInterval,
+        double multiplier,
+        Class<? extends Throwable>... exceptions
     ) {
-        final Map<Class<? extends Throwable>, Boolean> retryableExceptions =
+        Map<Class<? extends Throwable>, Boolean> retryableExceptions =
             Stream.of(exceptions)
                 .map(exception -> Map.entry(exception, true))
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
-        final RetryPolicy retryPolicy = new SimpleRetryPolicy(maxAttempts, retryableExceptions);
+        RetryPolicy retryPolicy = new SimpleRetryPolicy(maxAttempts, retryableExceptions);
 
-        final ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
         backOffPolicy.setInitialInterval(initialInterval);
         backOffPolicy.setMultiplier(multiplier);
 
-        final RetryTemplate retryTemplate = new RetryTemplate();
+        RetryTemplate retryTemplate = new RetryTemplate();
         retryTemplate.setRetryPolicy(retryPolicy);
         retryTemplate.setBackOffPolicy(backOffPolicy);
 
@@ -38,26 +38,26 @@ public class RetryTemplateFactory {
 
     @SafeVarargs
     public static RetryTemplate createUnlimited(
-        final long initialInterval,
-        final long maxInterval,
-        final double multiplier,
-        final Class<? extends Throwable>... exceptions
+        long initialInterval,
+        long maxInterval,
+        double multiplier,
+        Class<? extends Throwable>... exceptions
     ) {
-        final AlwaysRetryPolicy alwaysRetryPolicy = new AlwaysRetryPolicy();
-        final Map<Class<? extends Throwable>, RetryPolicy> policyMap =
+        AlwaysRetryPolicy alwaysRetryPolicy = new AlwaysRetryPolicy();
+        Map<Class<? extends Throwable>, RetryPolicy> policyMap =
             Stream.of(exceptions)
                 .map(exception -> Map.entry(exception, alwaysRetryPolicy))
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        final ExceptionClassifierRetryPolicy retryPolicy = new ExceptionClassifierRetryPolicy();
+        ExceptionClassifierRetryPolicy retryPolicy = new ExceptionClassifierRetryPolicy();
         retryPolicy.setPolicyMap(policyMap);
 
-        final ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
         backOffPolicy.setInitialInterval(initialInterval);
         backOffPolicy.setMaxInterval(maxInterval);
         backOffPolicy.setMultiplier(multiplier);
 
-        final RetryTemplate retryTemplate = new RetryTemplate();
+        RetryTemplate retryTemplate = new RetryTemplate();
         retryTemplate.setRetryPolicy(retryPolicy);
         retryTemplate.setBackOffPolicy(backOffPolicy);
 

@@ -4,7 +4,7 @@ import moe.pine.heroku.addons.HerokuRedis;
 
 public final class AppInitializer {
     public static void run() {
-        final HerokuRedis redis = HerokuRedis.get();
+        HerokuRedis redis = HerokuRedis.get();
         if (redis != null) {
             System.setProperty("spring.redis.host", redis.getHost());
             System.setProperty("spring.redis.password", redis.getPassword());
