@@ -2,7 +2,10 @@ apply plugin: 'org.springframework.boot'
 
 dependencies {
     // Sub-projects
+    implementation project(':lib-google-map')
+    implementation project(':lib-place')
     implementation project(':lib-slack')
+    implementation project(':lib-tabelog')
 
     // Spring Framework
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -26,6 +29,7 @@ dependencies {
 
     // Utilities
     implementation 'com.google.guava:guava'
+    implementation 'org.jsoup:jsoup'
 
     // My libraries
     implementation 'moe.pine:heroku-addons'

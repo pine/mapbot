@@ -2,8 +2,17 @@ rootProject.name = 'mapbot'
 
 include ':app'
 
+include ':lib-google-map'
+project(':lib-google-map').projectDir = new File(settingsDir, '/libs/google-map')
+
+include ':lib-place'
+project(':lib-place').projectDir = new File(settingsDir, '/libs/place')
+
 include ':lib-retry-support'
 project(':lib-retry-support').projectDir = new File(settingsDir, '/libs/retry-support')
 
 include ':lib-slack'
 project(':lib-slack').projectDir = new File(settingsDir, '/libs/slack')
+
+include ':lib-tabelog'
+project(':lib-tabelog').projectDir = new File(settingsDir, '/libs/tabelog')

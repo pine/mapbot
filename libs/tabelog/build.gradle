@@ -1,0 +1,17 @@
+dependencies {
+    // Sub-projects
+    implementation project(':lib-place')
+
+    // Spring Framework
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.retry:spring-retry'
+
+    // Jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Apache Commons
+    implementation 'org.apache.commons:commons-lang3'
+
+    // Jsoup
+    implementation 'org.jsoup:jsoup'
+}
