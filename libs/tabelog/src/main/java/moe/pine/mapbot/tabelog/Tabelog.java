@@ -19,7 +19,7 @@ import java.util.Optional;
 public class Tabelog {
     private static final String URL_PREFIX = "https://tabelog.com/";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final WebClient webClient;
 
@@ -33,11 +33,11 @@ public class Tabelog {
         }
 
         String body =
-            webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
         Objects.requireNonNull(body);
 
         Document document = Jsoup.parse(body);
@@ -49,25 +49,26 @@ public class Tabelog {
             restaurant = OBJECT_MAPPER.readValue(jsonLdData, Restaurant.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(
-                String.format("Unable to parse JSON-LD data. [uri=%s]", uri), e);
+                    String.format("Unable to parse JSON-LD data. [uri=%s]", uri), e);
         }
         log.info("A restaurant detected : {}", restaurant);
 
         if (StringUtils.isEmpty(restaurant.getName())) {
             throw new RuntimeException(
-                String.format("A restaurant name not found. [uri=%s, restaurant=%s]", uri, restaurant));
+                    String.format("A restaurant name not found. [uri=%s, restaurant=%s]", uri, restaurant));
         }
         if (restaurant.getAddress() == null) {
             throw new RuntimeException(
-                String.format("Address not found. [uri=%s, restaurant=%s]", uri, restaurant));
+                    String.format("Address not found. [uri=%s, restaurant=%s]", uri, restaurant));
         }
 
-        String address =
-            StringUtils.defaultString(restaurant.getAddress().getAddressRegion()) +
-                StringUtils.defaultString(restaurant.getAddress().getAddressLocality()) +
-                StringUtils.defaultString(restaurant.getAddress().getStreetAddress());
-        log.info("Restaurant address detected : {}", address);
+        String domesticAddress = restaurant.getAddress().getDomesticAddress();
+        if (StringUtils.isEmpty(domesticAddress)) {
+            throw new RuntimeException(
+                    String.format("Address not found. [uri=%s, restaurant=%s]", uri, restaurant));
+        }
+        log.info("Restaurant address detected : {}", domesticAddress);
 
-        return Optional.of(new Place(restaurant.getName(), address));
+        return Optional.of(new Place(restaurant.getName(), domesticAddress));
     }
 }
