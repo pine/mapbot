@@ -22,12 +22,12 @@ public class MessageSentEventHandler {
     private final SlackProperties slackProperties;
     private final SlackClient slackClient;
     private final Tabelog tabelog;
-    private final UrlFinder urlFinder;
+    private final UriExtractor uriExtractor;
     private final GoogleMap googleMap;
 
     void execute(MessageEvent messageEvent) throws InterruptedException {
         String text = messageEvent.getText();
-        List<String> urls = urlFinder.find(text);
+        List<String> urls = uriExtractor.extract(text);
         if (CollectionUtils.isEmpty(urls)) {
             return;
         }
