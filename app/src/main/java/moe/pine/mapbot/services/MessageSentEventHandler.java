@@ -2,6 +2,7 @@ package moe.pine.mapbot.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moe.pine.mapbot.google_map.GoogleMap;
 import moe.pine.mapbot.place.Place;
 import moe.pine.mapbot.properties.SlackProperties;
 import moe.pine.mapbot.slack.MessageEvent;
@@ -42,6 +43,8 @@ public class MessageSentEventHandler {
             return;
         }
 
-
+        places.forEach(v -> {
+            log.info(new GoogleMap().generateSearchUrl(v.getAddress()));
+        });
     }
 }

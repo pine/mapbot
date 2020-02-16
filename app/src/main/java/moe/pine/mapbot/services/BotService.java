@@ -8,6 +8,7 @@ import moe.pine.mapbot.slack.MessageEvent.Subtypes;
 import moe.pine.mapbot.slack.SlackClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PreDestroy;
 import java.time.Clock;
