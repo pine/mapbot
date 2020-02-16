@@ -23,6 +23,7 @@ public class MessageSentEventHandler {
     private final SlackClient slackClient;
     private final Tabelog tabelog;
     private final UrlFinder urlFinder;
+    private final GoogleMap googleMap;
 
     void execute(MessageEvent messageEvent) throws InterruptedException {
         String text = messageEvent.getText();
@@ -44,7 +45,7 @@ public class MessageSentEventHandler {
         }
 
         places.forEach(v -> {
-            log.info(new GoogleMap().generateSearchUrl(v.getAddress()));
+            log.info(googleMap.generateSearchUrl(v.getAddress()));
         });
     }
 }
