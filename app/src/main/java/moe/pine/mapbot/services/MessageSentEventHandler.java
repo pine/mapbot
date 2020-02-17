@@ -3,6 +3,7 @@ package moe.pine.mapbot.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.google_map.GoogleMap;
+import moe.pine.mapbot.models.MappedPlace;
 import moe.pine.mapbot.place.Place;
 import moe.pine.mapbot.properties.SlackProperties;
 import moe.pine.mapbot.slack.MessageEvent;
@@ -32,20 +33,21 @@ public class MessageSentEventHandler {
             return;
         }
 
-        List<Place> places =
-            urls.stream()
-                .parallel()
-                .flatMap(url -> {
-                    Optional<Place> place = tabelog.find(url);
-                    return place.stream();
-                })
-                .collect(Collectors.toUnmodifiableList());
-        if (CollectionUtils.isEmpty(places)) {
+        List<MappedPlace> mappedPlaces =
+                urls.stream()
+                        .parallel()
+                        .flatMap(url -> {
+                            Optional<Place> place = tabelog.find(url);
+                            return place.stream();
+                        })
+                        .map(place -> new MappedPlace(
+                                place.getName(),
+                                googleMap.generateSearchUrl(place.getAddress())))
+                        .collect(Collectors.toUnmodifiableList());
+        if (CollectionUtils.isEmpty(mappedPlaces)) {
             return;
         }
 
-        places.forEach(v -> {
-            log.info(googleMap.generateSearchUrl(v.getAddress()));
-        });
+        log.debug("{}", mappedPlaces);
     }
 }
