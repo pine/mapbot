@@ -3,19 +3,22 @@ package moe.pine.mapbot.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.properties.SlackProperties;
-import moe.pine.mapbot.slack.*;
+import moe.pine.mapbot.slack.MessageEvent;
+import moe.pine.mapbot.slack.PostMessageRequest;
+import moe.pine.mapbot.slack.PostMessageResponse;
+import moe.pine.mapbot.slack.SlackClient;
+import moe.pine.mapbot.slack.TextField;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class MessageSentEventHandler {
-    private final SlackProperties slackProperties;
     private final SlackClient slackClient;
+    private final SlackProperties slackProperties;
     private final OutgoingTextService outgoingTextService;
 
     void execute(MessageEvent messageEvent) throws InterruptedException {
@@ -27,6 +30,7 @@ public class MessageSentEventHandler {
         PostMessageRequest postMessageRequest =
                 PostMessageRequest.builder()
                         .username(slackProperties.getUsername())
+                        .threadTs(messageEvent.getThreadTs())
                         .channel(messageEvent.getChannel())
                         .textFields(textFields)
                         .iconUrl(slackProperties.getIconUrl())
@@ -34,5 +38,7 @@ public class MessageSentEventHandler {
 
         PostMessageResponse postMessageResponse =
                 slackClient.postMessage(postMessageRequest);
+
+
     }
 }
