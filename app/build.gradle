@@ -11,8 +11,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-jetty'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.retry:spring-retry'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -29,7 +27,6 @@ dependencies {
 
     // Utilities
     implementation 'com.google.guava:guava'
-    implementation 'org.jsoup:jsoup'
 
     // My libraries
     implementation 'moe.pine:heroku-addons'

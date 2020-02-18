@@ -1,18 +1,18 @@
 dependencies {
     // Sub-projects
-    implementation project(':lib-retry-support')
+    api project(':lib-retry-support')
 
     // Spring Framework
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.retry:spring-retry'
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.retry:spring-retry'
 
     // Slack
-    implementation 'com.github.seratch:jslack'
-    implementation 'javax.websocket:javax.websocket-api'
+    api 'com.github.seratch:jslack'
+    api 'javax.websocket:javax.websocket-api'
 
     // Jackson
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    api 'com.fasterxml.jackson.core:jackson-databind'
 
     // Apache Commons
-    implementation 'org.apache.commons:commons-lang3'
+    api 'org.apache.commons:commons-lang3'
 }

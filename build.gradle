@@ -18,37 +18,38 @@ buildscript {
     }
 }
 
-
-allprojects {
+configure(subprojects.findAll { relativePath(it.projectDir).startsWith('app') }) {
     apply plugin: 'java'
+}
+
+configure(subprojects.findAll { relativePath(it.projectDir).startsWith('libs/') }) {
+    apply plugin: 'java-library'
+}
+
+subprojects {
     apply plugin: 'idea'
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-maven'
     apply plugin: 'propdeps-idea'
+    apply plugin: 'io.spring.dependency-management'
 
     group 'moe.pine.mapbot'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
-    configurations {
-        implementation.exclude module: 'spring-boot-starter-tomcat'
-    }
-    repositories {
-        jcenter()
-    }
-
     compileJava {
         options.encoding = 'UTF-8'
         options.compilerArgs << '-Xlint:unchecked'
         options.compilerArgs << '-Xlint:deprecation'
     }
-}
 
-
-subprojects {
-    apply plugin: 'io.spring.dependency-management'
-
+    repositories {
+        jcenter()
+    }
+    configurations {
+        implementation.exclude module: 'spring-boot-starter-tomcat'
+    }
     dependencyManagement {
         imports {
             mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
