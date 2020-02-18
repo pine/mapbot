@@ -5,7 +5,6 @@ import moe.pine.mapbot.retry_support.RetryTemplateFactory;
 import org.springframework.retry.support.RetryTemplate;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
