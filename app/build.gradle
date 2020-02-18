@@ -3,6 +3,7 @@ apply plugin: 'org.springframework.boot'
 dependencies {
     // Sub-projects
     implementation project(':lib-google-map')
+    implementation project(':lib-log')
     implementation project(':lib-place')
     implementation project(':lib-slack')
     implementation project(':lib-tabelog')

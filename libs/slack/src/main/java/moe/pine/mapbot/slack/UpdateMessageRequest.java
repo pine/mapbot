@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class UpdateMessageRequest {
     String channel;
+    String text;
     List<TextField> textFields;
     String ts;
 }

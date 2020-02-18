@@ -23,10 +23,10 @@ class SlackRtmClient {
     private final List<EventListener> eventListeners = new CopyOnWriteArrayList<>();
 
     SlackRtmClient(
-        String token,
-        StateManager stateManager,
-        RetryTemplate retryTemplate,
-        RetryTemplate unlimitedRetryTemplate
+            String token,
+            StateManager stateManager,
+            RetryTemplate retryTemplate,
+            RetryTemplate unlimitedRetryTemplate
     ) {
         this.stateManager = stateManager;
         this.unlimitedRetryTemplate = unlimitedRetryTemplate;
@@ -65,7 +65,7 @@ class SlackRtmClient {
     }
 
     private void onEvent(String content) {
-        log.info("New event received: {}", content);
+        log.debug("New event received: {}", content);
         stateManager.throwIfAlreadyClosed();
 
         Optional<Event> eventOpt = Events.parse(content);

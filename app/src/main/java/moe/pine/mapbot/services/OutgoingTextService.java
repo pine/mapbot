@@ -32,7 +32,7 @@ public class OutgoingTextService {
                 .parallel()
                 .flatMap(this::convertToPlace)
                 .map(this::convertToMappedPlace)
-                .map(this::convertToText)
+                .map(this::convertToTextField)
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -52,7 +52,7 @@ public class OutgoingTextService {
                 .build();
     }
 
-    private TextField convertToText(MappedPlace mappedPlace) {
+    private TextField convertToTextField(MappedPlace mappedPlace) {
         String messageText =
                 String.format(":round_pushpin: <%s|%s>",
                         mappedPlace.getMapUrl(),

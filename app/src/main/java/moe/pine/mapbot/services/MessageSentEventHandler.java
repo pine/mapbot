@@ -2,6 +2,8 @@ package moe.pine.mapbot.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moe.pine.mapbot.log.SentLog;
+import moe.pine.mapbot.log.SentLogRepository;
 import moe.pine.mapbot.properties.SlackProperties;
 import moe.pine.mapbot.slack.MessageEvent;
 import moe.pine.mapbot.slack.PostMessageRequest;
@@ -17,6 +19,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class MessageSentEventHandler {
+    private final SentLogRepository sentLogRepository;
     private final SlackClient slackClient;
     private final SlackProperties slackProperties;
     private final OutgoingTextService outgoingTextService;
@@ -39,6 +42,11 @@ public class MessageSentEventHandler {
         PostMessageResponse postMessageResponse =
                 slackClient.postMessage(postMessageRequest);
 
-
+        SentLog sentLog = SentLog.builder()
+                .channel(messageEvent.getChannel())
+                .sourceTs(messageEvent.getTs())
+                .destinationTs(postMessageResponse.getTs())
+                .build();
+        sentLogRepository.add(sentLog);
     }
 }
