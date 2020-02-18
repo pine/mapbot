@@ -86,30 +86,4 @@ class SlackWebClient {
             }
         });
     }
-
-    List<User> getUsers() {
-        UsersListRequest usersListRequest =
-            UsersListRequest.builder()
-                .includeLocale(false)
-                .build();
-
-        UsersListResponse usersListResponse =
-            retryTemplate.execute(ctx -> {
-                stateManager.throwIfAlreadyClosed();
-                try {
-                    return methodsClient.usersList(usersListRequest);
-                } catch (IOException | SlackApiException e) {
-                    throw new SlackClientException(e);
-                }
-            });
-
-        return usersListResponse.getMembers()
-            .stream()
-            .map(v -> User.builder()
-                .id(v.getId())
-                .realName(v.getProfile().getRealName())
-                .displayName(v.getProfile().getDisplayName())
-                .build())
-            .collect(Collectors.toUnmodifiableList());
-    }
 }

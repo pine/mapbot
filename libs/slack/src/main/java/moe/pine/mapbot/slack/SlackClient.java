@@ -71,10 +71,6 @@ public class SlackClient {
         slackWebClient.deleteMessage(deleteMessageRequest);
     }
 
-    public List<User> getUsers() {
-        return slackWebClient.getUsers();
-    }
-
     public void close() throws IOException {
         if (closed.compareAndSet(false, true)) {
             log.info("Closing the socket.");
