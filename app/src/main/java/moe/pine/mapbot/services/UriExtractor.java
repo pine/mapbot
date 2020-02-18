@@ -3,10 +3,10 @@ package moe.pine.mapbot.services;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class UriExtractor {
@@ -26,6 +26,8 @@ public class UriExtractor {
             start = matcher.end();
         }
 
-        return Collections.unmodifiableList(urls);
+        return urls.stream()
+                .distinct()
+                .collect(Collectors.toUnmodifiableList());
     }
 }
