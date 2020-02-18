@@ -3,10 +3,8 @@ package moe.pine.mapbot.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.properties.SlackProperties;
-import moe.pine.mapbot.slack.MessageEvent;
-import moe.pine.mapbot.slack.PostMessageRequest;
-import moe.pine.mapbot.slack.SlackClient;
-import moe.pine.mapbot.slack.TextField;
+import moe.pine.mapbot.slack.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,22 +19,20 @@ public class MessageSentEventHandler {
     private final OutgoingTextService outgoingTextService;
 
     void execute(MessageEvent messageEvent) throws InterruptedException {
-        Optional<String> outgoingTextOpt = outgoingTextService.generate(messageEvent.getText());
-        if (outgoingTextOpt.isEmpty()) {
+        List<TextField> textFields = outgoingTextService.generate(messageEvent.getText());
+        if (CollectionUtils.isEmpty(textFields)) {
             return;
         }
 
-        log.info("{}", outgoingTextOpt);
-
-        String outgoingText = outgoingTextOpt.get();
         PostMessageRequest postMessageRequest =
                 PostMessageRequest.builder()
-                        .username("foo")
+                        .username(slackProperties.getUsername())
                         .channel(messageEvent.getChannel())
-                        .textFields(List.of(new TextField("aa", outgoingText)))
+                        .textFields(textFields)
+                        .iconUrl(slackProperties.getIconUrl())
                         .build();
 
-        log.info("postMessage: {}", postMessageRequest);
-        slackClient.postMessage(postMessageRequest);
+        PostMessageResponse postMessageResponse =
+                slackClient.postMessage(postMessageRequest);
     }
 }

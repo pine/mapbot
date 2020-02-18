@@ -41,8 +41,8 @@ public class Tabelog {
         Objects.requireNonNull(body);
 
         Document document = Jsoup.parse(body);
-        Element element = document.selectFirst("script[type=\"application/ld+json\"]");
-        String jsonLdData = element.html();
+        Element jsonLdElement = document.selectFirst("script[type=\"application/ld+json\"]");
+        String jsonLdData = jsonLdElement.html();
 
         Restaurant restaurant;
         try {
@@ -52,6 +52,13 @@ public class Tabelog {
                     String.format("Unable to parse JSON-LD data. [uri=%s]", uri), e);
         }
         log.info("A restaurant detected : {}", restaurant);
+
+        Element ogpTitleElement = document.selectFirst("meta[property=\"og:title\"]");
+        if (ogpTitleElement == null) {
+            throw new RuntimeException();
+        }
+
+        String ogpTitle = ogpTitleElement.attr("content");
 
         if (StringUtils.isEmpty(restaurant.getName())) {
             throw new RuntimeException(
@@ -69,6 +76,6 @@ public class Tabelog {
         }
         log.info("Restaurant address detected : {}", domesticAddress);
 
-        return Optional.of(new Place(restaurant.getName(), domesticAddress));
+        return Optional.of(new Place(restaurant.getName(), ogpTitle, domesticAddress));
     }
 }

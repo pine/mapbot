@@ -1,18 +1,16 @@
 package moe.pine.mapbot.services;
 
-import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.google_map.GoogleMap;
 import moe.pine.mapbot.models.MappedPlace;
 import moe.pine.mapbot.place.Place;
+import moe.pine.mapbot.slack.TextField;
 import moe.pine.mapbot.tabelog.Tabelog;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,42 +22,42 @@ public class OutgoingTextService {
     private final Tabelog tabelog;
     private final GoogleMap googleMap;
 
-    public Optional<String> generate(String incomingText) {
+    public List<TextField> generate(String incomingText) {
         List<String> urls = uriExtractor.extract(incomingText);
         if (CollectionUtils.isEmpty(urls)) {
-            return Optional.empty();
+            return List.of();
         }
 
-        String outgoingText =
-                urls.stream()
-                        .parallel()
-                        .flatMap(this::convertToPlace)
-                        .map(this::convertToMappedPlace)
-                        .flatMap(this::convertToText)
-                        .collect(Collectors.joining("\n"));
-
-        return Optional.ofNullable(StringUtils.firstNonEmpty(outgoingText));
+        return urls.stream()
+                .parallel()
+                .flatMap(this::convertToPlace)
+                .map(this::convertToMappedPlace)
+                .map(this::convertToText)
+                .collect(Collectors.toUnmodifiableList());
     }
 
-    @VisibleForTesting
-    Stream<Place> convertToPlace(String url) {
+    private Stream<Place> convertToPlace(String url) {
         return tabelog.find(url).stream();
     }
 
-    @VisibleForTesting
-    MappedPlace convertToMappedPlace(Place place) {
+    private MappedPlace convertToMappedPlace(Place place) {
+        String query = String.format("%s (%s)", place.getAddress(), place.getName());
+        String mapUrl = googleMap.generateSearchUrl(query);
+
         return MappedPlace.builder()
                 .name(place.getName())
+                .label(place.getLabel())
                 .address(place.getAddress())
-                .mapUrl(googleMap.generateSearchUrl(place.getAddress()))
+                .mapUrl(mapUrl)
                 .build();
     }
 
-    @VisibleForTesting
-    Stream<String> convertToText(MappedPlace mappedPlace) {
-        String messageText = ":round_pushpin: <" + mappedPlace.getMapUrl() + "|" + mappedPlace.getName() + ">";
-        log.debug("{}", messageText);
+    private TextField convertToText(MappedPlace mappedPlace) {
+        String messageText =
+                String.format(":round_pushpin: <%s|%s>",
+                        mappedPlace.getMapUrl(),
+                        mappedPlace.getAddress());
 
-        return Stream.of(messageText);
+        return new TextField(mappedPlace.getLabel(), messageText);
     }
 }

@@ -9,6 +9,7 @@ import lombok.Value;
 @AllArgsConstructor
 public class MappedPlace {
     String name;
+    String label;
     String address;
     String mapUrl;
 }
