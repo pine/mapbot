@@ -22,7 +22,7 @@ public class OutgoingTextService {
     private final Tabelog tabelog;
     private final GoogleMap googleMap;
 
-    public List<TextField> generate(String incomingText) {
+    List<TextField> generate(String incomingText) {
         List<String> urls = uriExtractor.extract(incomingText);
         if (CollectionUtils.isEmpty(urls)) {
             return List.of();
