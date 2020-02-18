@@ -11,6 +11,7 @@ import javax.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,8 +29,11 @@ class SlackRtmClient {
             RetryTemplate retryTemplate,
             RetryTemplate unlimitedRetryTemplate
     ) {
-        this.stateManager = stateManager;
-        this.unlimitedRetryTemplate = unlimitedRetryTemplate;
+        Objects.requireNonNull(token);
+        Objects.requireNonNull(retryTemplate);
+
+        this.stateManager = Objects.requireNonNull(stateManager);
+        this.unlimitedRetryTemplate = Objects.requireNonNull(unlimitedRetryTemplate);
 
         rtmClient = retryTemplate.execute(ctx -> {
             try {

@@ -26,33 +26,32 @@ public class SlackClient {
 
     public SlackClient(String token) {
         this(token,
-            RetryTemplateFactory.create(
-                5, 500, 2.0, SlackClientException.class),
-            RetryTemplateFactory.createUnlimited(
-                500, 60 * 1000, 2.0, SlackClientException.class));
+                RetryTemplateFactory.create(
+                        5, 500, 2.0, SlackClientException.class),
+                RetryTemplateFactory.createUnlimited(
+                        500, 60 * 1000, 2.0, SlackClientException.class));
     }
 
     SlackClient(
-        String token,
-        RetryTemplate retryTemplate,
-        RetryTemplate unlimitedRetryTemplate
+            String token,
+            RetryTemplate retryTemplate,
+            RetryTemplate unlimitedRetryTemplate
     ) {
         Objects.requireNonNull(retryTemplate);
         Objects.requireNonNull(unlimitedRetryTemplate);
 
         this.slackRtmClient = new SlackRtmClient(
-            token,
-            stateManager,
-            retryTemplate,
-            unlimitedRetryTemplate);
+                token,
+                stateManager,
+                retryTemplate,
+                unlimitedRetryTemplate);
         this.slackWebClient = new SlackWebClient(
-            token,
-            stateManager,
-            retryTemplate);
+                token,
+                stateManager,
+                retryTemplate);
     }
 
     public void addEventListener(EventListener listener) {
-
         slackRtmClient.addEventListener(listener);
     }
 

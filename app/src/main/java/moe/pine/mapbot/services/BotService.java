@@ -1,6 +1,5 @@
 package moe.pine.mapbot.services;
 
-import moe.pine.mapbot.properties.SlackProperties;
 import moe.pine.mapbot.slack.Event;
 import moe.pine.mapbot.slack.EventListener;
 import moe.pine.mapbot.slack.MessageEvent;
@@ -8,7 +7,6 @@ import moe.pine.mapbot.slack.MessageEvent.Subtypes;
 import moe.pine.mapbot.slack.SlackClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PreDestroy;
 import java.time.Clock;
@@ -16,7 +14,6 @@ import java.time.Instant;
 
 @Service
 public class BotService {
-    private final SlackProperties slackProperties;
     private final SlackClient slackClient;
 
     private final MessageChangedEventHandler messageChangedEventHandler;
@@ -27,14 +24,12 @@ public class BotService {
     private final EventListener eventConsumer = this::onEvent;
 
     public BotService(
-        SlackProperties slackProperties,
-        SlackClient slackClient,
-        MessageChangedEventHandler messageChangedEventHandler,
-        MessageDeletedEventHandler messageDeletedEventHandler,
-        MessageSentEventHandler messageSentEventHandler,
-        Clock clock
+            SlackClient slackClient,
+            MessageChangedEventHandler messageChangedEventHandler,
+            MessageDeletedEventHandler messageDeletedEventHandler,
+            MessageSentEventHandler messageSentEventHandler,
+            Clock clock
     ) {
-        this.slackProperties = slackProperties;
         this.slackClient = slackClient;
         this.messageChangedEventHandler = messageChangedEventHandler;
         this.messageDeletedEventHandler = messageDeletedEventHandler;
@@ -55,7 +50,7 @@ public class BotService {
         }
     }
 
-    private void onMessageEvent(final MessageEvent messageEvent) throws InterruptedException {
+    private void onMessageEvent(MessageEvent messageEvent) throws InterruptedException {
         double ts = Double.parseDouble(messageEvent.getTs());
         if (ts < startupTime.getEpochSecond()) {
             return;
@@ -65,7 +60,7 @@ public class BotService {
         }
 
         if (StringUtils.isEmpty(messageEvent.getSubtype()) ||
-            Subtypes.THREAD_BROADCAST.equals(messageEvent.getSubtype())) {
+                Subtypes.THREAD_BROADCAST.equals(messageEvent.getSubtype())) {
             messageSentEventHandler.execute(messageEvent);
         } else if (Subtypes.MESSAGE_CHANGED.equals(messageEvent.getSubtype())) {
             messageChangedEventHandler.execute(messageEvent);
