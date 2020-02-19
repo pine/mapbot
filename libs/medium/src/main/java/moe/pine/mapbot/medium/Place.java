@@ -1,4 +1,4 @@
-package moe.pine.mapbot.place;
+package moe.pine.mapbot.medium;
 
 import lombok.Value;
 

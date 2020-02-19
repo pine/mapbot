@@ -3,10 +3,9 @@ package moe.pine.mapbot.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.google_map.GoogleMap;
+import moe.pine.mapbot.medium.Place;
 import moe.pine.mapbot.models.MappedPlace;
-import moe.pine.mapbot.place.Place;
 import moe.pine.mapbot.slack.TextField;
-import moe.pine.mapbot.tabelog.Tabelog;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,9 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class OutgoingTextService {
-    private final UriExtractor uriExtractor;
-    private final Tabelog tabelog;
     private final GoogleMap googleMap;
+    private final MediumService mediumService;
+    private final UriExtractor uriExtractor;
 
     List<TextField> generate(String incomingText) {
         List<String> urls = uriExtractor.extract(incomingText);
@@ -36,8 +35,8 @@ public class OutgoingTextService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private Stream<Place> convertToPlace(String url) {
-        return tabelog.find(url).stream();
+    private Stream<Place> convertToPlace(String absoluteUrl) {
+        return mediumService.find(absoluteUrl).stream();
     }
 
     private MappedPlace convertToMappedPlace(Place place) {

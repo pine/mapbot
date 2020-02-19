@@ -1,3 +1,3 @@
 @org.springframework.lang.NonNullApi
 @org.springframework.lang.NonNullFields
-package moe.pine.mapbot.place;
+package moe.pine.mapbot.tabelog;

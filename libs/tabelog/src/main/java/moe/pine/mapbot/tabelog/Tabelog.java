@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import moe.pine.mapbot.place.Place;
+import moe.pine.mapbot.medium.Medium;
+import moe.pine.mapbot.medium.Place;
 import moe.pine.mapbot.tabelog.schema.Restaurant;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -16,7 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-public class Tabelog {
+public class Tabelog implements Medium {
     private static final String BASE_URL = "https://tabelog.com/";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -36,6 +37,7 @@ public class Tabelog {
         this.pathResolver = pathResolver;
     }
 
+    @Override
     public Optional<Place> find(String absoluteUrl) {
         Optional<String> pathOpt = pathResolver.resolve(absoluteUrl);
         if (pathOpt.isEmpty()) {
