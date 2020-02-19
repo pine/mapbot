@@ -14,18 +14,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class PathResolver {
+class PathResolver {
     private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(10L);
     private static final String OFFICIAL_URL_PREFIX = "https://tabelog.com/";
     private static final String AMP_URL_HOST = "https://www.google.co.jp/amp/s/s.tabelog.com/";
 
     private WebClient webClient;
 
-    public PathResolver(WebClient.Builder webClientBuilder) {
+    PathResolver(WebClient.Builder webClientBuilder) {
         webClient = webClientBuilder.build();
     }
 
-    public Optional<String> resolve(String absoluteUrl) {
+    Optional<String> resolve(String absoluteUrl) {
         Objects.requireNonNull(absoluteUrl);
 
         if (absoluteUrl.startsWith(OFFICIAL_URL_PREFIX)) {
