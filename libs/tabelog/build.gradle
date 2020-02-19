@@ -5,11 +5,13 @@ dependencies {
     // Spring Framework
     api 'org.springframework.boot:spring-boot-starter-webflux'
     api 'org.springframework.retry:spring-retry'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // Jackson
     api 'com.fasterxml.jackson.core:jackson-databind'
 
     // Apache Commons
+    api 'org.apache.commons:commons-collections4'
     api 'org.apache.commons:commons-lang3'
 
     // Jsoup

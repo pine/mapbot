@@ -17,24 +17,35 @@ import java.util.Optional;
 
 @Slf4j
 public class Tabelog {
-    private static final String URL_PREFIX = "https://tabelog.com/";
+    private static final String BASE_URL = "https://tabelog.com/";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final WebClient webClient;
+    private final PathResolver pathResolver;
 
     public Tabelog(WebClient.Builder webClientBuilder) {
-        webClient = webClientBuilder.build();
+        this(webClientBuilder, new PathResolver(webClientBuilder));
     }
 
-    public Optional<Place> find(String uri) {
-        if (!uri.startsWith(URL_PREFIX)) {
+    Tabelog(
+            WebClient.Builder webClientBuilder,
+            PathResolver pathResolver
+    ) {
+        webClient = webClientBuilder.baseUrl(BASE_URL).build();
+        this.pathResolver = pathResolver;
+    }
+
+    public Optional<Place> find(String absoluteUrl) {
+        Optional<String> pathOpt = pathResolver.resolve(absoluteUrl);
+        if (pathOpt.isEmpty()) {
             return Optional.empty();
         }
 
+        String path = pathOpt.get();
         String body =
                 webClient.get()
-                        .uri(uri)
+                        .uri(path)
                         .retrieve()
                         .bodyToMono(String.class)
                         .block();
@@ -49,7 +60,7 @@ public class Tabelog {
             restaurant = OBJECT_MAPPER.readValue(jsonLdData, Restaurant.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(
-                    String.format("Unable to parse JSON-LD data. [uri=%s]", uri), e);
+                    String.format("Unable to parse JSON-LD data. [uri=%s]", absoluteUrl), e);
         }
         log.info("A restaurant detected : {}", restaurant);
 
@@ -62,17 +73,17 @@ public class Tabelog {
 
         if (StringUtils.isEmpty(restaurant.getName())) {
             throw new RuntimeException(
-                    String.format("A restaurant name not found. [uri=%s, restaurant=%s]", uri, restaurant));
+                    String.format("A restaurant name not found. [uri=%s, restaurant=%s]", absoluteUrl, restaurant));
         }
         if (restaurant.getAddress() == null) {
             throw new RuntimeException(
-                    String.format("Address not found. [uri=%s, restaurant=%s]", uri, restaurant));
+                    String.format("Address not found. [uri=%s, restaurant=%s]", absoluteUrl, restaurant));
         }
 
         String domesticAddress = restaurant.getAddress().getDomesticAddress();
         if (StringUtils.isEmpty(domesticAddress)) {
             throw new RuntimeException(
-                    String.format("Address not found. [uri=%s, restaurant=%s]", uri, restaurant));
+                    String.format("Address not found. [uri=%s, restaurant=%s]", absoluteUrl, restaurant));
         }
         log.info("Restaurant address detected : {}", domesticAddress);
 
