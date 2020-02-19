@@ -10,20 +10,20 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PathResolverTest {
+public class PathResolverIT {
     private PathResolver pathResolver;
 
     @Before
     public void setUp() {
         WebClient.Builder webClientBuilder = mock(WebClient.Builder.class);
-        when(webClientBuilder.build()).thenReturn(mock(WebClient.class));
+        when(webClientBuilder.build()).thenReturn(WebClient.create());
 
         pathResolver = new PathResolver(webClientBuilder);
     }
 
     @Test
-    public void resolveTest_officialUrl() {
+    public void resolveTest_ampUrl() {
         assertEquals(Optional.of("/tokyo/A1304/A130401/13000809/"),
-                pathResolver.resolve("https://tabelog.com/tokyo/A1304/A130401/13000809/"));
+                pathResolver.resolve("https://www.google.co.jp/amp/s/s.tabelog.com/tokyo/A1304/A130401/13000809/top_amp/"));
     }
 }
