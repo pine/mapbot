@@ -1,5 +1,6 @@
 package moe.pine.mapbot.tabelog;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 class PathResolver {
     private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(10L);
     private static final String OFFICIAL_URL_PREFIX = "https://tabelog.com/";
@@ -32,26 +34,19 @@ class PathResolver {
             return Optional.ofNullable(StringUtils.firstNonEmpty(getPath(absoluteUrl)));
         }
 
+        // AMP support
         if (absoluteUrl.startsWith(AMP_URL_HOST)) {
-            ClientResponse clientResponse =
-                    webClient.get()
-                            .uri(absoluteUrl)
-                            .exchange()
-                            .block(BLOCK_TIMEOUT);
-            if (clientResponse == null) {
-                return Optional.empty();
-            }
-            clientResponse.bodyToMono(String.class).block(BLOCK_TIMEOUT);
-
-            List<String> locationHeaders =
-                    clientResponse.headers().header(HttpHeaders.LOCATION);
-            if (CollectionUtils.isEmpty(locationHeaders)) {
+            Optional<String> redirectUrlOpt = getRedirectUrl(absoluteUrl);
+            if (redirectUrlOpt.isEmpty()) {
                 return Optional.empty();
             }
 
-            String locationHeader = locationHeaders.get(0);
-            if (locationHeader.startsWith(OFFICIAL_URL_PREFIX)) {
-                return Optional.ofNullable(StringUtils.firstNonEmpty(getPath(locationHeader)));
+            String redirectUrl = redirectUrlOpt.get();
+            log.info("The redirect URL was resolved from AMP URL. [absolute-url={}, redirect-url={}]",
+                    absoluteUrl, redirectUrl);
+
+            if (redirectUrl.startsWith(OFFICIAL_URL_PREFIX)) {
+                return Optional.ofNullable(StringUtils.firstNonEmpty(redirectUrl));
             }
         }
 
@@ -64,5 +59,25 @@ class PathResolver {
         } catch (MalformedURLException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private Optional<String> getRedirectUrl(String absoluteUrl) {
+        ClientResponse clientResponse =
+                webClient.get()
+                        .uri(absoluteUrl)
+                        .exchange()
+                        .block(BLOCK_TIMEOUT);
+        if (clientResponse == null) {
+            return Optional.empty();
+        }
+        clientResponse.bodyToMono(String.class).block(BLOCK_TIMEOUT);
+
+        List<String> redirectHeaders =
+                clientResponse.headers().header(HttpHeaders.LOCATION);
+        if (CollectionUtils.isEmpty(redirectHeaders)) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(StringUtils.firstNonEmpty(redirectHeaders.get(0)));
     }
 }
