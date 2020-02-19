@@ -46,7 +46,7 @@ class PathResolver {
                     absoluteUrl, redirectUrl);
 
             if (redirectUrl.startsWith(OFFICIAL_URL_PREFIX)) {
-                return Optional.ofNullable(StringUtils.firstNonEmpty(redirectUrl));
+                return Optional.ofNullable(StringUtils.firstNonEmpty(getPath(redirectUrl)));
             }
         }
 
