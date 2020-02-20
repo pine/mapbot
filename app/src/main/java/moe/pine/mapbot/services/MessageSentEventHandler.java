@@ -11,6 +11,7 @@ import moe.pine.mapbot.slack.PostMessageResponse;
 import moe.pine.mapbot.slack.SlackClient;
 import moe.pine.mapbot.slack.TextField;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,10 +31,11 @@ public class MessageSentEventHandler {
             return;
         }
 
+        String threadTs = StringUtils.firstNonEmpty(messageEvent.getThreadTs(), messageEvent.getTs());
         PostMessageRequest postMessageRequest =
                 PostMessageRequest.builder()
                         .username(slackProperties.getUsername())
-                        .threadTs(messageEvent.getThreadTs())
+                        .threadTs(threadTs)
                         .channel(messageEvent.getChannel())
                         .textFields(textFields)
                         .iconUrl(slackProperties.getIconUrl())
