@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.medium.Medium;
 import moe.pine.mapbot.medium.Place;
+import moe.pine.mapbot.structured_data.StructuredDataParser;
+import moe.pine.mapbot.structured_data.types.Thing;
 import moe.pine.mapbot.tabelog.schema.Restaurant;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -13,8 +15,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Tabelog implements Medium {
@@ -24,6 +28,7 @@ public class Tabelog implements Medium {
 
     private final WebClient webClient;
     private final PathResolver pathResolver;
+    private final StructuredDataParser structuredDataParser;
 
     public Tabelog(WebClient.Builder webClientBuilder) {
         this(webClientBuilder, new PathResolver(webClientBuilder));
@@ -35,6 +40,7 @@ public class Tabelog implements Medium {
     ) {
         webClient = webClientBuilder.baseUrl(BASE_URL).build();
         this.pathResolver = pathResolver;
+        this.structuredDataParser = new StructuredDataParser();
     }
 
     @Override
@@ -56,6 +62,12 @@ public class Tabelog implements Medium {
         Document document = Jsoup.parse(body);
         Element jsonLdElement = document.selectFirst("script[type=\"application/ld+json\"]");
         String jsonLdData = jsonLdElement.html();
+
+        List<Thing> things = structuredDataParser.parse(jsonLdData);
+        things.stream()
+                .filter(v -> v instanceof moe.pine.mapbot.structured_data.types.Restaurant)
+                .map(v -> (moe.pine.mapbot.structured_data.types.Restaurant) v)
+                .collect(Collectors.toUnmodifiableList());
 
         Restaurant restaurant;
         try {
