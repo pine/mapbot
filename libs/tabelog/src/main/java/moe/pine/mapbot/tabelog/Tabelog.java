@@ -24,18 +24,21 @@ public class Tabelog implements Medium {
     private final PathResolver pathResolver;
     private final StructuredDataParser structuredDataParser;
 
-    public Tabelog(WebClient.Builder webClientBuilder) {
-        this(webClientBuilder, new PathResolver(webClientBuilder), new StructuredDataParser());
+    public Tabelog(
+            WebClient.Builder webClientBuilder,
+            StructuredDataParser structuredDataParser
+    ) {
+        this(webClientBuilder, structuredDataParser, new PathResolver(webClientBuilder));
     }
 
     Tabelog(
             WebClient.Builder webClientBuilder,
-            PathResolver pathResolver,
-            StructuredDataParser structuredDataParser
+            StructuredDataParser structuredDataParser,
+            PathResolver pathResolver
     ) {
         webClient = webClientBuilder.baseUrl(BASE_URL).build();
-        this.pathResolver = pathResolver;
-        this.structuredDataParser = structuredDataParser;
+        this.structuredDataParser = Objects.requireNonNull(structuredDataParser);
+        this.pathResolver = Objects.requireNonNull(pathResolver);
     }
 
     @Override
