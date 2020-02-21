@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(BreadcrumbList.class),
+        @JsonSubTypes.Type(PostalAddress.class),
         @JsonSubTypes.Type(Restaurant.class)
 })
 public class Thing {

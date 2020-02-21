@@ -1,14 +1,11 @@
 package moe.pine.mapbot.tabelog;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.medium.Medium;
 import moe.pine.mapbot.medium.Place;
 import moe.pine.mapbot.structured_data.StructuredDataParser;
+import moe.pine.mapbot.structured_data.types.Restaurant;
 import moe.pine.mapbot.structured_data.types.Thing;
-import moe.pine.mapbot.tabelog.schema.Restaurant;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,29 +15,27 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class Tabelog implements Medium {
     private static final String BASE_URL = "https://tabelog.com/";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final WebClient webClient;
     private final PathResolver pathResolver;
     private final StructuredDataParser structuredDataParser;
 
     public Tabelog(WebClient.Builder webClientBuilder) {
-        this(webClientBuilder, new PathResolver(webClientBuilder));
+        this(webClientBuilder, new PathResolver(webClientBuilder), new StructuredDataParser());
     }
 
     Tabelog(
             WebClient.Builder webClientBuilder,
-            PathResolver pathResolver
+            PathResolver pathResolver,
+            StructuredDataParser structuredDataParser
     ) {
         webClient = webClientBuilder.baseUrl(BASE_URL).build();
         this.pathResolver = pathResolver;
-        this.structuredDataParser = new StructuredDataParser();
+        this.structuredDataParser = structuredDataParser;
     }
 
     @Override
@@ -60,46 +55,53 @@ public class Tabelog implements Medium {
         Objects.requireNonNull(body);
 
         Document document = Jsoup.parse(body);
-        Element jsonLdElement = document.selectFirst("script[type=\"application/ld+json\"]");
-        String jsonLdData = jsonLdElement.html();
-
-        List<Thing> things = structuredDataParser.parse(jsonLdData);
-        things.stream()
-                .filter(v -> v instanceof moe.pine.mapbot.structured_data.types.Restaurant)
-                .map(v -> (moe.pine.mapbot.structured_data.types.Restaurant) v)
-                .collect(Collectors.toUnmodifiableList());
-
-        Restaurant restaurant;
-        try {
-            restaurant = OBJECT_MAPPER.readValue(jsonLdData, Restaurant.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(
-                    String.format("Unable to parse JSON-LD data. [uri=%s]", absoluteUrl), e);
+        String structuredData =
+                Optional.ofNullable(document.selectFirst("script[type=\"application/ld+json\"]"))
+                        .map(Element::html)
+                        .orElse(StringUtils.EMPTY);
+        if (StringUtils.isEmpty(structuredData)) {
+            log.warn("Structured data not found. [absolute-url={}. path={}]", absoluteUrl, path);
+            return Optional.empty();
         }
+
+        List<Thing> things = structuredDataParser.parse(structuredData);
+        Optional<Restaurant> restaurantOpt =
+                things.stream()
+                        .filter(v -> v instanceof Restaurant)
+                        .map(v -> (Restaurant) v)
+                        .findAny();
+        if (restaurantOpt.isEmpty()) {
+            log.warn("Unable to find any restaurant in structured data. [absolute-url={}, path={}, structured-data={}]",
+                    absoluteUrl, path, structuredData);
+            return Optional.empty();
+        }
+
+        Restaurant restaurant = restaurantOpt.get();
         log.info("A restaurant detected : {}", restaurant);
 
-        Element ogpTitleElement = document.selectFirst("meta[property=\"og:title\"]");
-        if (ogpTitleElement == null) {
-            throw new RuntimeException();
-        }
-
-        String ogpTitle = ogpTitleElement.attr("content");
-
         if (StringUtils.isEmpty(restaurant.getName())) {
-            throw new RuntimeException(
-                    String.format("A restaurant name not found. [uri=%s, restaurant=%s]", absoluteUrl, restaurant));
+            log.warn("A restaurant name not found. [absolute-url={}, path={}, restaurant={}]", absoluteUrl, path, restaurant);
+            return Optional.empty();
         }
         if (restaurant.getAddress() == null) {
-            throw new RuntimeException(
-                    String.format("Address not found. [uri=%s, restaurant=%s]", absoluteUrl, restaurant));
+            log.warn("Address not found. [absolute-url={}, path={}, restaurant={}]", absoluteUrl, path, restaurant);
+            return Optional.empty();
         }
 
         String domesticAddress = restaurant.getAddress().getDomesticAddress();
         if (StringUtils.isEmpty(domesticAddress)) {
-            throw new RuntimeException(
-                    String.format("Address not found. [uri=%s, restaurant=%s]", absoluteUrl, restaurant));
+            log.warn("Address not found. [absolute-url={}, restaurant={}]", absoluteUrl, restaurant);
+            return Optional.empty();
         }
         log.info("Restaurant address detected : {}", domesticAddress);
+
+        String ogpTitle = Optional.ofNullable(document.selectFirst("meta[property=\"og:title\"]"))
+                .map(v -> v.attr("content"))
+                .orElse(StringUtils.EMPTY);
+        if (StringUtils.isEmpty(ogpTitle)) {
+            log.warn("OGP title not found. [absolute-url={}, path={}]", absoluteUrl, path);
+            return Optional.empty();
+        }
 
         return Optional.of(new Place(restaurant.getName(), ogpTitle, domesticAddress));
     }
