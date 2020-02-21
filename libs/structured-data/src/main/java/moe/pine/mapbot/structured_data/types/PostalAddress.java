@@ -1,6 +1,8 @@
 package moe.pine.mapbot.structured_data.types;
 
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,7 +13,9 @@ import org.apache.commons.lang3.StringUtils;
  * @see <a href="https://tabelog.com/tokyo/A1304/A130401/13004352/">讃岐うどん大使 東京麺通団 （とうきょうめんつうだん） - 新宿西口/うどん [食べログ]</a>
  */
 @Value
-public class PostalAddress {
+@EqualsAndHashCode(callSuper = true)
+@JsonTypeName("PostalAddress")
+public class PostalAddress extends Thing {
     String addressCountry;
     String addressLocality;
 
