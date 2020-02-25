@@ -14,18 +14,19 @@ public class StructuredDataParser {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public List<Thing> parse(String structuredData) {
+    public StructuredData parse(String structuredData) {
         if (StringUtils.isBlank(structuredData)) {
-            return List.of();
+            return StructuredData.EMPTY;
         }
 
         try {
             Thing thing = OBJECT_MAPPER.readValue(structuredData, Thing.class);
-            return List.of(thing);
+            return new StructuredData(List.of(thing));
         } catch (JsonProcessingException e1) {
             try {
-                return OBJECT_MAPPER.readValue(structuredData, new TypeReference<>() {
+                List<Thing> things = OBJECT_MAPPER.readValue(structuredData, new TypeReference<>() {
                 });
+                return new StructuredData(things);
             } catch (JsonProcessingException e2) {
                 UncheckedIOException re = new UncheckedIOException(e2);
                 re.addSuppressed(e1);

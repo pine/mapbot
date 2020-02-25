@@ -67,12 +67,7 @@ public class Tabelog implements Medium {
             return Optional.empty();
         }
 
-        List<Thing> things = structuredDataParser.parse(structuredData);
-        Optional<Restaurant> restaurantOpt =
-                things.stream()
-                        .filter(v -> v instanceof Restaurant)
-                        .map(v -> (Restaurant) v)
-                        .findAny();
+        Optional<Restaurant> restaurantOpt = structuredDataParser.parse(structuredData).findRestaurant();
         if (restaurantOpt.isEmpty()) {
             log.warn("Unable to find any restaurant in structured data. [absolute-url={}, path={}, structured-data={}]",
                     absoluteUrl, path, structuredData);

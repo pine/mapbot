@@ -5,14 +5,12 @@ import moe.pine.mapbot.medium.Medium;
 import moe.pine.mapbot.medium.Place;
 import moe.pine.mapbot.structured_data.StructuredDataParser;
 import moe.pine.mapbot.structured_data.types.Restaurant;
-import moe.pine.mapbot.structured_data.types.Thing;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -75,12 +73,7 @@ public class Gnavi implements Medium {
             return Optional.empty();
         }
 
-        List<Thing> things = structuredDataParser.parse(structuredData);
-        Optional<Restaurant> restaurantOpt =
-                things.stream()
-                        .filter(v -> v instanceof Restaurant)
-                        .map(v -> (Restaurant) v)
-                        .findAny();
+        Optional<Restaurant> restaurantOpt = structuredDataParser.parse(structuredData).findRestaurant();
         if (restaurantOpt.isEmpty()) {
             log.warn("Unable to find any restaurant in structured data. [absolute-url={}, path={}, structured-data={}]",
                     absoluteUrl, path, structuredData);
