@@ -1,6 +1,7 @@
 dependencies {
     // Sub-projects
     api project(':lib-medium')
+    api project(':lib-structured-data')
 
     // Spring Framework
     api 'org.springframework.boot:spring-boot-starter-webflux'
