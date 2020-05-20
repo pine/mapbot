@@ -1,4 +1,4 @@
-package moe.pine.mapbot.services;
+package moe.pine.mapbot.services.bot;
 
 import moe.pine.mapbot.slack.Event;
 import moe.pine.mapbot.slack.EventListener;

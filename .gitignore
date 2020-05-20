@@ -6,3 +6,5 @@ out/
 
 /app/src/main/resources/application-local.yml
 /app/src/main/resources/application-prod.yml
+/app2/src/main/resources/application-local.yml
+/app2/src/main/resources/application-prod.yml

@@ -1,4 +1,4 @@
-package moe.pine.mapbot.models;
+package moe.pine.mapbot.services.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -2,12 +2,12 @@ apply plugin: 'org.springframework.boot'
 
 dependencies {
     // Sub-projects
-    implementation project(':lib-gnavi')
+    implementation project(':lib-amp')
     implementation project(':lib-google-map')
     implementation project(':lib-log')
     implementation project(':lib-medium')
     implementation project(':lib-slack')
-    implementation project(':lib-tabelog')
+    implementation project(':lib-jsonld')
 
     // Spring Framework
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'

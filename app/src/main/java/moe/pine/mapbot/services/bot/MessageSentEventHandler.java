@@ -1,10 +1,11 @@
-package moe.pine.mapbot.services;
+package moe.pine.mapbot.services.bot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.log.SentLog;
 import moe.pine.mapbot.log.SentLogRepository;
 import moe.pine.mapbot.properties.SlackProperties;
+import moe.pine.mapbot.services.message.OutgoingMessageService;
 import moe.pine.mapbot.slack.MessageEvent;
 import moe.pine.mapbot.slack.PostMessageRequest;
 import moe.pine.mapbot.slack.PostMessageResponse;
@@ -19,14 +20,14 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MessageSentEventHandler {
+class MessageSentEventHandler {
     private final SentLogRepository sentLogRepository;
     private final SlackClient slackClient;
     private final SlackProperties slackProperties;
-    private final OutgoingTextService outgoingTextService;
+    private final OutgoingMessageService outgoingMessageService;
 
     void execute(MessageEvent messageEvent) throws InterruptedException {
-        List<TextField> textFields = outgoingTextService.generate(messageEvent.getText());
+        List<TextField> textFields = outgoingMessageService.generate(messageEvent.getText());
         if (CollectionUtils.isEmpty(textFields)) {
             return;
         }

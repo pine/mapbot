@@ -1,4 +1,4 @@
-package moe.pine.mapbot.services;
+package moe.pine.mapbot.services.message;
 
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
-public class UriExtractor {
+class UriExtractor {
     /**
      * @see <a href="https://urlregex.com/">The Perfect URL Regular Expression - Perfect URL Regex</a>
      */
