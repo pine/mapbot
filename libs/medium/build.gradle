@@ -2,4 +2,11 @@ dependencies {
     // Sub-projects
     implementation project(':lib-amp')
     implementation project(':lib-jsonld')
+
+    // Apache Commons
+    implementation 'org.apache.commons:commons-collections4'
+    implementation 'org.apache.commons:commons-lang3'
+
+    // Jsoup
+    implementation 'org.jsoup:jsoup'
 }

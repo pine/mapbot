@@ -1,5 +1,6 @@
 package moe.pine.mapbot.amp;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -10,25 +11,22 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public class Amp {
     private static final String AMP_PREFIX = "https://www.google.co.jp/amp/";
     private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(10L);
 
-    private WebClient webClient;
+    private final WebClient webClient;
 
-    public Amp(WebClient.Builder webClientBuilder) {
-        webClient = webClientBuilder.build();
-    }
-
-    public Optional<String> resolveRedirect(String absoluteUrl) {
+    public Optional<String> resolveOriginalUrl(String absoluteUrl) {
         if (absoluteUrl.startsWith(AMP_PREFIX)) {
-            return getRedirectUrl(absoluteUrl);
+            return getRedirectedUrl(absoluteUrl);
         }
 
         return Optional.empty();
     }
 
-    protected Optional<String> getRedirectUrl(String absoluteUrl) {
+    protected Optional<String> getRedirectedUrl(String absoluteUrl) {
         ClientResponse clientResponse =
                 webClient.get()
                         .uri(absoluteUrl)

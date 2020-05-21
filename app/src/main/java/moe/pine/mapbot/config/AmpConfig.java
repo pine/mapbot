@@ -9,6 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class AmpConfig {
     @Bean
     public Amp amp(WebClient.Builder webClientBuilder) {
-        return new Amp(webClientBuilder);
+        return new Amp(webClientBuilder.build());
     }
 }

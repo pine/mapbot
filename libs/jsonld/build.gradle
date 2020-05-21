@@ -1,0 +1,11 @@
+dependencies {
+    // Spring Framework
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Apache Commons
+    implementation 'org.apache.commons:commons-lang3'
+
+    // Jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+}
