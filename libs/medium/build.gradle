@@ -1,4 +1,12 @@
 dependencies {
-    // Spring Framework
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Sub-projects
+    implementation project(':lib-amp')
+    implementation project(':lib-jsonld')
+
+    // Apache Commons
+    implementation 'org.apache.commons:commons-collections4'
+    implementation 'org.apache.commons:commons-lang3'
+
+    // Jsoup
+    implementation 'org.jsoup:jsoup'
 }

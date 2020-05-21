@@ -11,11 +11,11 @@ public class CacheConfig {
     @Bean
     public CacheInterceptor noCacheInterceptor() {
         CachePolicy cachePolicy = new CachePolicyBuilder()
-            .private_()
-            .noCache()
-            .noStore()
-            .mustRevalidate()
-            .build();
+                .private_()
+                .noCache()
+                .noStore()
+                .mustRevalidate()
+                .build();
 
         return new CacheInterceptor(cachePolicy);
     }

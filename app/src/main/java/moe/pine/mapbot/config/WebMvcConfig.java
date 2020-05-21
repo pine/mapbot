@@ -1,6 +1,5 @@
 package moe.pine.mapbot.config;
 
-
 import lombok.RequiredArgsConstructor;
 import moe.pine.spring.cache.interceptors.CacheInterceptor;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry
-            .addInterceptor(noCacheInterceptor)
-            .addPathPatterns("/health");
+                .addInterceptor(noCacheInterceptor)
+                .addPathPatterns("/health");
     }
 }
