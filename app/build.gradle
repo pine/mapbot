@@ -18,6 +18,7 @@ dependencies {
 
     // Servlet
     implementation 'javax.validation:validation-api'
+    runtimeOnly 'org.hibernate:hibernate-validator'
     compileOnly 'javax.servlet:javax.servlet-api'
 
     // Redis

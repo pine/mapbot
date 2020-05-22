@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.2.4.RELEASE'
+        springBootVersion = '2.3.0.RELEASE'
         lettuceVersion = '5.2.1.RELEASE'
         lombokVersion = '1.18.12'
     }
@@ -56,6 +56,7 @@ subprojects {
         }
         dependencies {
             dependency 'javax.servlet:javax.servlet-api:4.0.1'
+            dependency 'org.hibernate:hibernate-validator:6.1.5.Final'
 
             // Guava
             dependency 'com.google.guava:guava:27.0.1-jre'
