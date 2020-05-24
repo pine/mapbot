@@ -29,6 +29,7 @@ configure(subprojects.findAll { relativePath(it.projectDir).startsWith('libs/') 
     apply plugin: 'java-library'
 }
 
+apply plugin: 'java'
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'propdeps'
