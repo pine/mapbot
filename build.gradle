@@ -3,6 +3,7 @@ buildscript {
         springBootVersion = '2.3.0.RELEASE'
         lettuceVersion = '5.2.1.RELEASE'
         lombokVersion = '1.18.12'
+        powermockVersion = '2.0.7'
     }
     repositories {
         jcenter()
@@ -81,6 +82,9 @@ subprojects {
             // Test
             dependency 'junit:junit:4.12'
             dependency 'org.mockito:mockito-core:2.24.5'
+            dependency "org.powermock:powermock-reflect:$powermockVersion"
+            dependency "org.powermock:powermock-api-mockito2:$powermockVersion"
+            dependency "org.powermock:powermock-module-junit4:$powermockVersion"
         }
     }
     dependencies {
