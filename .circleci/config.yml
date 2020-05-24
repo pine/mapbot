@@ -21,8 +21,7 @@ jobs:
       - run:
           name: Test
           command: |
-            ./gradlew check jacocoTestReport
-            bash <(curl -s https://codecov.io/bash)
+            ./gradlew check
       - run:
           name: Build
           command: |

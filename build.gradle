@@ -29,8 +29,7 @@ configure(subprojects.findAll { relativePath(it.projectDir).startsWith('libs/') 
     apply plugin: 'java-library'
 }
 
-apply plugin: 'java'
-allprojects {
+subprojects {
     apply plugin: 'idea'
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-maven'
@@ -48,16 +47,6 @@ allprojects {
         options.compilerArgs << '-Xlint:deprecation'
     }
 
-    // ----- JaCoCo ---------------------------------------
-
-    apply plugin: 'jacoco'
-
-    jacoco {
-        toolVersion = '0.8.3'
-    }
-}
-
-subprojects {
     repositories {
         jcenter()
     }
