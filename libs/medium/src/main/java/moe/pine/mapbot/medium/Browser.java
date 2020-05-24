@@ -12,12 +12,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class Browser {
+    private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(30L);
+
     private final JsonLdParser jsonLdParser;
     private final WebClient webClient;
 
@@ -32,7 +35,7 @@ public class Browser {
                 .uri(absoluteUrl)
                 .retrieve()
                 .bodyToMono(String.class)
-                .block();
+                .block(BLOCK_TIMEOUT);
         if (StringUtils.isBlank(content)) {
             return Optional.empty();
         }
