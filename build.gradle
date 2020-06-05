@@ -21,6 +21,9 @@ buildscript {
     }
 }
 
+
+apply plugin: 'java'
+
 configure(subprojects.findAll { relativePath(it.projectDir).startsWith('app') }) {
     apply plugin: 'java'
 }
@@ -29,7 +32,8 @@ configure(subprojects.findAll { relativePath(it.projectDir).startsWith('libs/') 
     apply plugin: 'java-library'
 }
 
-subprojects {
+
+allprojects {
     apply plugin: 'idea'
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-maven'
@@ -37,6 +41,10 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
 
     group 'moe.pine.mapbot'
+
+    repositories {
+        jcenter()
+    }
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -47,9 +55,6 @@ subprojects {
         options.compilerArgs << '-Xlint:deprecation'
     }
 
-    repositories {
-        jcenter()
-    }
     configurations {
         implementation.exclude module: 'spring-boot-starter-tomcat'
     }
@@ -108,6 +113,38 @@ subprojects {
         implementation 'org.slf4j:slf4j-api'
         implementation 'ch.qos.logback:logback-classic'
     }
+
+
+    // ----- JaCoCo -----------------------------------
+
+    apply plugin: 'jacoco'
+
+    jacoco {
+        toolVersion = '0.8.3'
+    }
+}
+
+
+// ----- JaCoCo -------------------------------------------
+
+task jacocoMerge(type: JacocoMerge) {
+    dependsOn(subprojects.jacocoTestReport.dependsOn)
+    mustRunAfter(subprojects.jacocoTestReport.mustRunAfter)
+    destinationFile = file("${buildDir}/jacoco/test.exec")
+    executionData = files(subprojects.jacocoTestReport.executionData)
+        .filter { f -> f.exists() }
+}
+
+jacocoTestReport {
+    dependsOn(jacocoMerge)
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(subprojects.sourceSets.main.output)
 }
 
 
