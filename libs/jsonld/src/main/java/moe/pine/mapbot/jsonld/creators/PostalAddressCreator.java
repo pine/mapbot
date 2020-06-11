@@ -6,9 +6,20 @@ import moe.pine.mapbot.jsonld.types.PostalAddress;
 
 import java.util.Optional;
 
-public class PostalAddressCreator implements Creator<PostalAddress> {
+public class PostalAddressCreator extends AbstractCreator<PostalAddress> {
     @Override
-    public Optional<PostalAddress> create(JsonNode node, Factory factory) {
-        return Optional.empty();
+    protected String getType() {
+        return PostalAddress.TYPE;
+    }
+
+    @Override
+    public Optional<PostalAddress> onCreate(JsonNode node, Factory factory) {
+        return Optional.of(
+                new PostalAddress(
+                        JsonUtils.getText(node, PostalAddress.CONTEXT_ATTR),
+                        JsonUtils.getText(node, PostalAddress.ID_ATTR),
+                        JsonUtils.getText(node, PostalAddress.ADDRESS_LOCALITY_ATTR),
+                        JsonUtils.getText(node, PostalAddress.ADDRESS_REGION_ATTR),
+                        JsonUtils.getText(node, PostalAddress.STREET_ADDRESS_ATTR)));
     }
 }

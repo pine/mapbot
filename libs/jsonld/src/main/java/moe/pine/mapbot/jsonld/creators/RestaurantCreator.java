@@ -1,13 +1,15 @@
 package moe.pine.mapbot.jsonld.creators;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.jsonld.factory.Factory;
 import moe.pine.mapbot.jsonld.types.PostalAddress;
 import moe.pine.mapbot.jsonld.types.Restaurant;
 
 import java.util.Optional;
 
-public class RestaurantCreator implements Creator<Restaurant> {
+@Slf4j
+public class RestaurantCreator extends AbstractCreator<Restaurant> {
     @Override
     public String getType() {
         return Restaurant.TYPE;
@@ -15,17 +17,11 @@ public class RestaurantCreator implements Creator<Restaurant> {
 
     @Override
     public Optional<Restaurant> onCreate(JsonNode node, Factory factory) {
-        if (node.isEmpty()) {
-            return Optional.empty();
-        }
-
-        new Restaurant(
-                "",
-                "",
-                node.get(Restaurant.NAME_ATTR).asText(),
-                factory.getCreator(PostalAddress.class)
-                        .flatMap(v -> v.create(node.get(Restaurant.ADDRESS_ATTR), factory))
-                        .orElse(null));
-        return Optional.empty();
+        return Optional.of(
+                new Restaurant(
+                        JsonUtils.getText(node, Restaurant.CONTEXT_ATTR),
+                        JsonUtils.getText(node, Restaurant.ID_ATTR),
+                        JsonUtils.getText(node, Restaurant.NAME_ATTR),
+                        JsonUtils.create(node, Restaurant.ADDRESS_ATTR, PostalAddress.class, factory)));
     }
 }
