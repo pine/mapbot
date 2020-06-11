@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class JsonLd {
-    private final List<Thing> things;
+    private final List<? extends Thing> things;
 
-    public <T> Optional<T> findAny(Class<T> clazz) {
+    public <T extends Thing> Optional<T> findAny(Class<T> clazz) {
         return things.stream()
                 .filter(v -> clazz.isAssignableFrom(v.getClass()))
                 .map(clazz::cast)

@@ -1,17 +1,16 @@
 package moe.pine.mapbot.jsonld.types;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.Value;
+import lombok.experimental.NonFinal;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-@JsonSubTypes({
-        @JsonSubTypes.Type(BreadcrumbList.class),
-        @JsonSubTypes.Type(DataFeedItem.class),
-        @JsonSubTypes.Type(FAQPage.class),
-        @JsonSubTypes.Type(ItemList.class),
-        @JsonSubTypes.Type(PostalAddress.class),
-        @JsonSubTypes.Type(Restaurant.class),
-        @JsonSubTypes.Type(ViewAction.class)
-})
+@Value
+@NonFinal
 public class Thing {
+    public static final String CONTEXT_ATTR = "@context";
+    public static final String ID_ATTR = "@id";
+    public static final String TYPE_ATTR = "@type";
+
+    String context;
+    String id;
+    String type;
 }
