@@ -12,6 +12,7 @@ dependencies {
 
     // Jackson
     api 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 
     // Apache Commons
     api 'org.apache.commons:commons-lang3'
