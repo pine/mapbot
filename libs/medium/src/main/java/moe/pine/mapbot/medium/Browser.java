@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
@@ -31,12 +32,19 @@ public class Browser {
     }
 
     Optional<Context> browse(String absoluteUrl) {
-        String content = webClient.get()
-                .uri(absoluteUrl)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block(BLOCK_TIMEOUT);
-        if (StringUtils.isBlank(content)) {
+        ClientResponse clientResponse =
+                webClient.get()
+                        .uri(absoluteUrl)
+                        .exchange()
+                        .block(BLOCK_TIMEOUT);
+        if (clientResponse == null) {
+            return Optional.empty();
+        }
+
+        String content = clientResponse.bodyToMono(String.class)
+                .blockOptional()
+                .orElse(StringUtils.EMPTY);
+        if (StringUtils.isEmpty(content)) {
             return Optional.empty();
         }
 

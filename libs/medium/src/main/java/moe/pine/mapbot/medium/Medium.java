@@ -25,7 +25,7 @@ public class Medium {
 
         Optional<Browser.Context> contextOpt = browser.browse(resolvedUrl);
         if (contextOpt.isEmpty()) {
-            log.warn("Unable to get the content. [absolute-url={}, resolved-url={}]", absoluteUrl, resolvedUrl);
+            log.info("Unable to get the content. [absolute-url={}, resolved-url={}]", absoluteUrl, resolvedUrl);
             return Optional.empty();
         }
 
@@ -46,7 +46,7 @@ public class Medium {
         Restaurant restaurant = restaurantOpt.get();
         String name = restaurant.getName();
         if (StringUtils.isBlank(name)) {
-            log.warn("A restaurant name not found. [absolute-url={}, restaurant={}]", absoluteUrl, restaurant);
+            log.info("A restaurant name not found. [absolute-url={}, restaurant={}]", absoluteUrl, restaurant);
             return Optional.empty();
         }
 
@@ -54,7 +54,7 @@ public class Medium {
                 .map(PostalAddress::getDomesticAddress)
                 .orElse(StringUtils.EMPTY);
         if (StringUtils.isBlank(address)) {
-            log.warn("Address not found. [absolute-url={}, restaurant={}]", absoluteUrl, restaurant);
+            log.info("Address not found. [absolute-url={}, restaurant={}]", absoluteUrl, restaurant);
             return Optional.empty();
         }
 
