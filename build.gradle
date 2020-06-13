@@ -87,6 +87,7 @@ allprojects {
             dependency 'moe.pine:heroku-addons:0.3.0'
             dependency 'moe.pine:spring-cache-interceptors:0.1.2'
             dependency 'org.jsoup:jsoup:1.12.1'
+            dependency 'com.github.maricn:logback-slack-appender:1.4.0'
 
             // Test
             dependency 'junit:junit:4.12'
