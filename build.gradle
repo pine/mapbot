@@ -150,7 +150,7 @@ jacocoTestReport {
 
 // ----- Configuration ------------------------------------
 
-def confFiles = fileTree('credentials').include('**/*.yml', '**/*.json')
+def confFiles = fileTree('credentials').include('**/*.yml', '**/*.xml','**/*.json')
 confFiles.forEach { File src ->
     def dest = new File(
         src.absolutePath.replace("${rootDir.absolutePath}/credentials", rootDir.absolutePath))

@@ -30,6 +30,7 @@ dependencies {
 
     // Utilities
     implementation 'com.google.guava:guava'
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 
     // My libraries
     implementation 'moe.pine:heroku-addons'
