@@ -70,7 +70,11 @@ class SlackRtmClient {
 
     private void onEvent(String content) {
         log.debug("New event received: {}", content);
-        stateManager.throwIfAlreadyClosed();
+        
+        if (stateManager.isClosed()) {
+            log.info("The server has already been shutdown.");
+            return;
+        }
 
         Optional<Event> eventOpt = Events.parse(content);
         if (eventOpt.isEmpty()) {
@@ -97,7 +101,11 @@ class SlackRtmClient {
         log.info("The socket has been closed. The reason is {}. Trying reconnect.", closeReason);
 
         unlimitedRetryTemplate.execute(ctx -> {
-            stateManager.throwIfAlreadyClosed();
+            if (stateManager.isClosed()) {
+                log.info("The server has already been shutdown.");
+                return null;
+            }
+
             try {
                 rtmClient.reconnect();
                 return null;
