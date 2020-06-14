@@ -94,7 +94,7 @@ class SlackRtmClient {
     }
 
     private void onClose(CloseReason closeReason) {
-        log.warn("The socket has been closed. The reason is {}. Trying reconnect.", closeReason);
+        log.info("The socket has been closed. The reason is {}. Trying reconnect.", closeReason);
 
         unlimitedRetryTemplate.execute(ctx -> {
             stateManager.throwIfAlreadyClosed();
@@ -102,7 +102,7 @@ class SlackRtmClient {
                 rtmClient.reconnect();
                 return null;
             } catch (IOException | SlackApiException | URISyntaxException | DeploymentException e) {
-                log.warn("Connecting failed. Number of retries is {}", ctx.getRetryCount(), e);
+                log.info("Connecting failed. Number of retries is {}", ctx.getRetryCount(), e);
                 throw new SlackClientException(e);
             }
         });
