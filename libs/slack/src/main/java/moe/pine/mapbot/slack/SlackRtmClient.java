@@ -70,7 +70,7 @@ class SlackRtmClient {
 
     private void onEvent(String content) {
         log.debug("New event received: {}", content);
-        
+
         if (stateManager.isClosed()) {
             log.info("The server has already been shutdown.");
             return;
