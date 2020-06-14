@@ -1,4 +1,4 @@
-# mapbot &nbsp;[![CircleCI](https://circleci.com/gh/pine/mapbot/tree/master.svg?style=shield)](https://circleci.com/gh/pine/mapbot/tree/master)
+# mapbot &nbsp;[![CircleCI](https://circleci.com/gh/pine/mapbot/tree/master.svg?style=shield)](https://circleci.com/gh/pine/mapbot/tree/master) [![codecov](https://codecov.io/gh/pine/mapbot/branch/master/graph/badge.svg)](https://codecov.io/gh/pine/mapbot)
 :world_map: Google Maps bot
 
 ## Requirements
