@@ -35,10 +35,10 @@ public class Amp {
         if (clientResponse == null) {
             return Optional.empty();
         }
-        clientResponse.bodyToMono(String.class).block(BLOCK_TIMEOUT);
 
-        List<String> redirectHeaders =
-                clientResponse.headers().header(HttpHeaders.LOCATION);
+        List<String> redirectHeaders = clientResponse.headers().header(HttpHeaders.LOCATION);
+        clientResponse.releaseBody();
+
         if (CollectionUtils.isEmpty(redirectHeaders)) {
             return Optional.empty();
         }
