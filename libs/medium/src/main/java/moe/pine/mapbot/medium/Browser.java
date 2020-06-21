@@ -19,16 +19,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 public class Browser {
     private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(30L);
-    private static final Set<MediaType> ALLOWED_MEDIA_TYPES =
-            Set.of(MediaType.TEXT_HTML, MediaType.APPLICATION_XHTML_XML);
-
+    
     private final JsonLdParser jsonLdParser;
     private final WebClient webClient;
 
@@ -54,8 +51,9 @@ public class Browser {
         }
 
         MediaType mediaType = mediaTypeOpt.get();
-        if (!ALLOWED_MEDIA_TYPES.contains(mediaType)) {
-            log.debug("Unsupported media type [absoluteUrl={}, media-type={}]", absoluteUrl, mediaType);
+        CensoredMediaType censoredMediaType = new CensoredMediaType(mediaType);
+        if (!censoredMediaType.isSupported()) {
+            log.debug("Unsupported media type [absoluteUrl={}, media-type={}]", absoluteUrl, censoredMediaType);
             return Optional.empty();
         }
 
