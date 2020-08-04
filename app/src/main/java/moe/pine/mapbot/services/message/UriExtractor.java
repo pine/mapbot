@@ -14,7 +14,7 @@ class UriExtractor {
      * @see <a href="https://urlregex.com/">The Perfect URL Regular Expression - Perfect URL Regex</a>
      */
     private final Pattern PATTERN =
-            Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_]");
+            Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_!:,.;]*[-a-zA-Z0-9+&@#/%=~_]");
 
     public List<String> extract(String text) {
         List<String> urls = new ArrayList<>();
