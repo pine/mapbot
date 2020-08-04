@@ -15,6 +15,7 @@ import java.util.Optional;
 public class Medium {
     private final Amp amp;
     private final Browser browser;
+    private final DenyHostFilter denyHostFilter;
 
     public Optional<Place> find(String absoluteUrl) {
         Optional<String> originalUrlOpt = amp.resolveOriginalUrl(absoluteUrl);
@@ -22,6 +23,11 @@ public class Medium {
 
         String resolvedUrl = originalUrlOpt.orElse(absoluteUrl);
         log.debug("Resolved URL: {}", resolvedUrl);
+
+        if (denyHostFilter.isDenied(resolvedUrl)) {
+            log.debug("Host denied. [absolute-url={}, resolved-url={}]", absoluteUrl, resolvedUrl);
+            return Optional.empty();
+        }
 
         Optional<Browser.Context> contextOpt = browser.browse(resolvedUrl);
         if (contextOpt.isEmpty()) {
