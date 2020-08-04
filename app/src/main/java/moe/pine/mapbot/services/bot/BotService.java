@@ -51,8 +51,13 @@ public class BotService {
     }
 
     private void onMessageEvent(MessageEvent messageEvent) throws InterruptedException {
-        double ts = Double.parseDouble(messageEvent.getTs());
-        if (ts < startupTime.getEpochSecond()) {
+        String ts = messageEvent.getTs();
+        if (StringUtils.isEmpty(ts)) {
+            return;
+        }
+
+        double parsedTs = Double.parseDouble(ts);
+        if (parsedTs < startupTime.getEpochSecond()) {
             return;
         }
         if (StringUtils.isNotEmpty(messageEvent.getBotId())) {
