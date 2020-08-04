@@ -3,7 +3,7 @@ package moe.pine.mapbot.config;
 import moe.pine.mapbot.amp.Amp;
 import moe.pine.mapbot.jsonld.JsonLdParser;
 import moe.pine.mapbot.medium.Browser;
-import moe.pine.mapbot.medium.DenyHostFilter;
+import moe.pine.mapbot.medium.HostFilter;
 import moe.pine.mapbot.medium.Medium;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +17,9 @@ public class MediumConfig {
     public Medium medium(
             Amp amp,
             Browser browser,
-            DenyHostFilter denyHostFilter
+            HostFilter hostFilter
     ) {
-        return new Medium(amp, browser, denyHostFilter);
+        return new Medium(amp, browser, hostFilter);
     }
 
     @Bean
@@ -31,9 +31,9 @@ public class MediumConfig {
     }
 
     @Bean
-    public DenyHostFilter denyHostFilter(
+    public HostFilter hostFilter(
             MediumProperties mediumProperties
     ) {
-        return new DenyHostFilter(mediumProperties.getDenyHosts());
+        return new HostFilter(mediumProperties.getDeniedHosts());
     }
 }

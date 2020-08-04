@@ -13,5 +13,5 @@ import java.util.Set;
 @ConstructorBinding
 @ConfigurationProperties("medium")
 public class MediumProperties {
-    @NotNull Set<String> denyHosts;
+    @NotNull Set<String> deniedHosts;
 }
