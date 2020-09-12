@@ -6,6 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import static org.junit.Assert.assertEquals;
 
 public class GoogleMapTest {
@@ -19,5 +22,7 @@ public class GoogleMapTest {
     public void generateSearchUrlTest() {
         assertEquals("https://www.google.com/maps/search/?api=1&query=%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A",
                 googleMap.generateSearchUrl("あいうえお"));
+        assertEquals("https://www.google.com/maps/search/?api=1&query=%28abc%29",
+                googleMap.generateSearchUrl("(abc)"));
     }
 }
