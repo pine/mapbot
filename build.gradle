@@ -67,7 +67,6 @@ allprojects {
         }
         dependencies {
             dependency 'javax.servlet:javax.servlet-api:4.0.1'
-            dependency 'org.hibernate:hibernate-validator:6.1.5.Final'
             dependency "org.springframework.retry:spring-retry:$springRetryVersion"
 
             // Guava
