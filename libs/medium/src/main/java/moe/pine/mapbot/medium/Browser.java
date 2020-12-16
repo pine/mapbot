@@ -13,7 +13,7 @@ import org.jsoup.UncheckedIOException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Browser {
     private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(30L);
-    
+
     private final JsonLdParser jsonLdParser;
     private final WebClient webClient;
 
@@ -36,28 +36,28 @@ public class Browser {
     }
 
     Optional<Context> browse(String absoluteUrl) {
-        ClientResponse clientResponse =
+        ResponseEntity<String> responseEntity =
                 webClient.get()
                         .uri(absoluteUrl)
-                        .exchange()
+                        .retrieve()
+                        .toEntity(String.class)
                         .block(BLOCK_TIMEOUT);
-        if (clientResponse == null) {
+        if (responseEntity == null) {
             return Optional.empty();
         }
 
-        Optional<MediaType> mediaTypeOpt = clientResponse.headers().contentType();
-        if (mediaTypeOpt.isEmpty()) {
+        MediaType mediaType = responseEntity.getHeaders().getContentType();
+        if (mediaType == null) {
             return Optional.empty();
         }
 
-        MediaType mediaType = mediaTypeOpt.get();
         CensoredMediaType censoredMediaType = new CensoredMediaType(mediaType);
         if (!censoredMediaType.isSupported()) {
             log.debug("Unsupported media type [absoluteUrl={}, media-type={}]", absoluteUrl, censoredMediaType);
             return Optional.empty();
         }
 
-        String content = clientResponse.bodyToMono(String.class).block();
+        String content = responseEntity.getBody();
         if (StringUtils.isBlank(content)) {
             return Optional.empty();
         }

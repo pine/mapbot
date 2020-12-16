@@ -4,8 +4,8 @@ import moe.pine.mapbot.retry_support.RetryTemplateFactory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.retry.support.RetryTemplate;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
@@ -47,18 +47,17 @@ public class Amp {
     }
 
     protected Optional<String> getRedirectedUrl(String absoluteUrl) {
-        ClientResponse clientResponse =
+        ResponseEntity<Void> responseEntity =
                 webClient.get()
                         .uri(absoluteUrl)
-                        .exchange()
+                        .retrieve()
+                        .toBodilessEntity()
                         .block(BLOCK_TIMEOUT);
-        if (clientResponse == null) {
+        if (responseEntity == null) {
             return Optional.empty();
         }
 
-        List<String> redirectHeaders = clientResponse.headers().header(HttpHeaders.LOCATION);
-        clientResponse.releaseBody();
-
+        List<String> redirectHeaders = responseEntity.getHeaders().get(HttpHeaders.LOCATION);
         if (CollectionUtils.isEmpty(redirectHeaders)) {
             return Optional.empty();
         }

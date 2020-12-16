@@ -126,11 +126,15 @@ public class AmpTest {
     public void getRedirectedUrlTest_nullResponse() {
         RequestHeadersUriSpec requestHeadersUriSpec = mock(RequestHeadersUriSpec.class);
         RequestHeadersSpec requestHeadersSpec = mock(RequestHeadersSpec.class);
+        WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 
         doReturn(requestHeadersUriSpec).when(webClient).get();
-        when(requestHeadersUriSpec.uri("absoluteUrl")).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.exchange()).thenReturn(Mono.empty());
+        when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.toBodilessEntity()).thenReturn(Mono.empty());
 
         assertEquals(Optional.empty(), amp.getRedirectedUrl("absoluteUrl"));
+
+        verify(requestHeadersUriSpec).uri("absoluteUrl");
     }
 }
