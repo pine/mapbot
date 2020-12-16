@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.4.RELEASE'
+        springBootVersion = '2.4.1'
         springRetryVersion = '1.3.0'
         kotlinVersion = '1.4.10'
         lettuceVersion = '5.3.4.RELEASE'
