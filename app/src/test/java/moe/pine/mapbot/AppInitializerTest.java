@@ -1,39 +1,38 @@
 package moe.pine.mapbot;
 
-import lombok.SneakyThrows;
 import moe.pine.heroku.addons.HerokuRedis;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.assertEquals;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(HerokuRedis.class)
+
+@ExtendWith(MockitoExtension.class)
 public class AppInitializerTest {
     @Test
-    @SneakyThrows
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void runTest() {
         HerokuRedis redis = mock(HerokuRedis.class);
         when(redis.getHost()).thenReturn("host");
         when(redis.getPassword()).thenReturn("password");
         when(redis.getPort()).thenReturn(12345);
 
-        mockStatic(HerokuRedis.class);
-        when(HerokuRedis.get()).thenReturn(redis);
+        try (MockedStatic<HerokuRedis> mockedStatic = Mockito.mockStatic(HerokuRedis.class)) {
+            mockedStatic.when(HerokuRedis::get).thenReturn(redis);
+            System.clearProperty("spring.redis.host");
+            System.clearProperty("spring.redis.password");
+            System.clearProperty("spring.redis.port");
 
-        System.clearProperty("spring.redis.host");
-        System.clearProperty("spring.redis.password");
-        System.clearProperty("spring.redis.port");
+            AppInitializer.run();
 
-        AppInitializer.run();
-
-        assertEquals("host", System.getProperty("spring.redis.host"));
-        assertEquals("password", System.getProperty("spring.redis.password"));
-        assertEquals("12345", System.getProperty("spring.redis.port"));
+            assertEquals("host", System.getProperty("spring.redis.host"));
+            assertEquals("password", System.getProperty("spring.redis.password"));
+            assertEquals("12345", System.getProperty("spring.redis.port"));
+        }
     }
 }

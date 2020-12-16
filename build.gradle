@@ -5,6 +5,7 @@ buildscript {
         kotlinVersion = '1.4.10'
         lombokVersion = '1.18.12'
         okhttp3Version = '4.9.0'
+        mockitoVersion = '3.6.28'
         powermockVersion = '2.0.7'
     }
     repositories {
@@ -87,8 +88,8 @@ allprojects {
             dependency 'com.github.maricn:logback-slack-appender:1.4.0'
 
             // Test
-            dependency 'junit:junit:4.12'
-            dependency 'org.mockito:mockito-core:2.24.5'
+            dependency "org.mockito:mockito-core:$mockitoVersion"
+            dependency "org.mockito:mockito-junit-jupiter:$mockitoVersion"
             dependency "org.powermock:powermock-reflect:$powermockVersion"
             dependency "org.powermock:powermock-api-mockito2:$powermockVersion"
             dependency "org.powermock:powermock-module-junit4:$powermockVersion"
