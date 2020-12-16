@@ -58,10 +58,10 @@ public class Amp {
         }
 
         List<String> redirectHeaders = responseEntity.getHeaders().get(HttpHeaders.LOCATION);
-        if (CollectionUtils.isEmpty(redirectHeaders)) {
-            return Optional.empty();
-        }
 
-        return Optional.ofNullable(StringUtils.firstNonEmpty(redirectHeaders.get(0)));
+        return CollectionUtils.emptyIfNull(redirectHeaders)
+                .stream()
+                .findFirst()
+                .filter(StringUtils::isNotEmpty);
     }
 }
