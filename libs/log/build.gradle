@@ -2,6 +2,9 @@ dependencies {
     // Spring Framework
     api 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    // Apache Commons
+    implementation 'org.apache.commons:commons-lang3'
+
     // Jackson
     api 'com.fasterxml.jackson.core:jackson-databind'
 }
