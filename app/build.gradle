@@ -36,10 +36,6 @@ dependencies {
     // My libraries
     implementation 'moe.pine:heroku-addons'
     implementation 'moe.pine:spring-cache-interceptors'
-
-    // Test
-    testImplementation 'org.mockito:mockito-core'
-    testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
 compileJava.dependsOn(processResources)
