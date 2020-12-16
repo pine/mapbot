@@ -3,7 +3,6 @@ buildscript {
         springBootVersion = '2.4.1'
         springRetryVersion = '1.3.0'
         kotlinVersion = '1.4.10'
-        lettuceVersion = '5.3.4.RELEASE'
         lombokVersion = '1.18.12'
         okhttp3Version = '4.9.0'
         powermockVersion = '2.0.7'
@@ -79,9 +78,6 @@ allprojects {
             // Slack
             dependency 'com.github.seratch:jslack:3.0.1'
             dependency 'javax.websocket:javax.websocket-api:1.1'
-
-            // Redis
-            dependency "io.lettuce:lettuce-core:$lettuceVersion"
 
             // Utilities
             dependency "org.projectlombok:lombok:$lombokVersion"
