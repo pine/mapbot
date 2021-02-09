@@ -19,6 +19,8 @@ public class RedisConfig {
         log.info("REDIS_URL: {}", redisUrl);
 
         HerokuRedis redis = HerokuRedis.get();
+        log.info("HerokuRedis: {}", redis);
+
         if (redis != null) {
             configuration.setHostName(redis.getHost());
             configuration.setPort(redis.getPort());
