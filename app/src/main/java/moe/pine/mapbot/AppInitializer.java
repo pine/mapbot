@@ -11,7 +11,8 @@ public final class AppInitializer {
 
         HerokuRedis redis = HerokuRedis.get();
         if (redis != null) {
-            log.info("HerokuRedis: {}", redis);
+            log.info("HerokuRedis: host={}, password={}, port={}",
+                    redis.getHost(), redis.getPassword(), redis.getPort());
 
             System.setProperty("spring.redis.host", redis.getHost());
             System.setProperty("spring.redis.password", redis.getPassword());
