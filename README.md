@@ -26,4 +26,4 @@ $ heroku deploy:jar --jar app/build/libs/app.jar --jdk 11
 ```
 
 ## License
-MIT &copy; Pine Mizune
+MIT &copy; [Pine Mizune](https://profile.pine.moe/)
