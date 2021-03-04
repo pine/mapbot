@@ -36,12 +36,19 @@ public class Browser {
     }
 
     Optional<Context> browse(String absoluteUrl) {
-        ResponseEntity<String> responseEntity =
-                webClient.get()
-                        .uri(absoluteUrl)
-                        .retrieve()
-                        .toEntity(String.class)
-                        .block(BLOCK_TIMEOUT);
+        ResponseEntity<String> responseEntity;
+        try {
+            responseEntity =
+                    webClient.get()
+                            .uri(absoluteUrl)
+                            .retrieve()
+                            .toEntity(String.class)
+                            .block(BLOCK_TIMEOUT);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(
+                    String.format("Unable to fetch content. [absolute-url=%s]", absoluteUrl), e);
+        }
+
         if (responseEntity == null) {
             return Optional.empty();
         }
