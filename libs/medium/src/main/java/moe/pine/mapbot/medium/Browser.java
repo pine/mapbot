@@ -7,6 +7,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import moe.pine.mapbot.jsonld.JsonLd;
 import moe.pine.mapbot.jsonld.JsonLdParser;
+import moe.pine.mapbot.retry_support.RetryTemplateFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.UncheckedIOException;
@@ -14,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
@@ -22,12 +24,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class Browser {
     private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(30L);
 
     private final JsonLdParser jsonLdParser;
     private final WebClient webClient;
+    private final RetryTemplate retryTemplate;
 
     @Value
     @Getter(AccessLevel.PRIVATE)
@@ -35,19 +38,30 @@ public class Browser {
         Document document;
     }
 
+    public Browser(
+            JsonLdParser jsonLdParser,
+            WebClient webClient
+    ) {
+        this(jsonLdParser, webClient,
+                RetryTemplateFactory.create(
+                        5, 500, 2.0, BrowserException.class));
+    }
+
     Optional<Context> browse(String absoluteUrl) {
-        ResponseEntity<String> responseEntity;
-        try {
-            responseEntity =
-                    webClient.get()
-                            .uri(absoluteUrl)
-                            .retrieve()
-                            .toEntity(String.class)
-                            .block(BLOCK_TIMEOUT);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(
-                    String.format("Unable to fetch content. [absolute-url=%s]", absoluteUrl), e);
-        }
+        ResponseEntity<String> responseEntity =
+                retryTemplate.execute(ctx -> {
+                    try {
+                        return webClient.get()
+                                .uri(absoluteUrl)
+                                .retrieve()
+                                .toEntity(String.class)
+                                .block(BLOCK_TIMEOUT);
+                    } catch (RuntimeException e) {
+                        throw new BrowserException(
+                                String.format("Unable to fetch content. [absolute-url=%s, retry-count=%d]",
+                                        absoluteUrl, ctx.getRetryCount()), e);
+                    }
+                });
 
         if (responseEntity == null) {
             return Optional.empty();
