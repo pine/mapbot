@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AppTest {
+class AppTest {
     @Autowired
     private App app;
 
     @Test
-    public void mainTest() {
+    void mainTest() {
         assertNotNull(app);
     }
 }

@@ -4,9 +4,9 @@ import moe.pine.mapbot.retry_support.RetryTemplateFactory;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.support.RetryTemplate;
@@ -19,11 +19,11 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -33,15 +33,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AmpTest {
+class AmpTest {
     private Amp amp;
     private WebClient webClient;
 
     private MockWebServer mockWebServer;
     private String baseUrl;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         webClient = spy(WebClient.create());
         amp = spy(new Amp(webClient));
 
@@ -49,13 +49,13 @@ public class AmpTest {
         baseUrl = mockWebServer.url("").toString();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    void tearDown() throws Exception {
         mockWebServer.shutdown();
     }
 
     @Test
-    public void constructorTest() {
+    void constructorTest() {
         Amp amp = new Amp(webClient);
         RetryTemplate retryTemplate = (RetryTemplate) ReflectionTestUtils.getField(amp, "retryTemplate");
 
@@ -63,7 +63,7 @@ public class AmpTest {
     }
 
     @Test
-    public void resolveOriginalUrlTest_amp() {
+    void resolveOriginalUrlTest_amp() {
         String absoluteUrl = "https://www.google.co.jp/amp/s/s.tabelog.com/tokyo/A1304/A130401/13000809/top_amp/";
         doReturn(Optional.of("redirectedUrl")).when(amp).getRedirectedUrl(absoluteUrl);
 
@@ -71,12 +71,12 @@ public class AmpTest {
     }
 
     @Test
-    public void resolveOriginalUrlTest_nonAmp() {
+    void resolveOriginalUrlTest_nonAmp() {
         assertEquals(Optional.empty(), amp.resolveOriginalUrl("https://www.amazon.co.jp/"));
     }
 
     @Test
-    public void resolveOriginalUrlTest_maxRetry() {
+    void resolveOriginalUrlTest_maxRetry() {
         String absoluteUrl = "https://www.google.co.jp/amp/s/s.tabelog.com/tokyo/A1304/A130401/13000809/top_amp/";
         RetryTemplate retryTemplate = RetryTemplateFactory.create(5, 0L, 1.0, RuntimeException.class);
         Amp amp = spy(new Amp(webClient, retryTemplate));
@@ -97,7 +97,7 @@ public class AmpTest {
     }
 
     @Test
-    public void getRedirectedUrlTest() throws Exception {
+    void getRedirectedUrlTest() throws Exception {
         MockResponse mockResponse = new MockResponse();
         mockResponse.setResponseCode(HttpStatus.FOUND.value());
         mockResponse.addHeader(HttpHeaders.LOCATION, "redirectedUrl");
@@ -110,7 +110,7 @@ public class AmpTest {
     }
 
     @Test
-    public void getRedirectedUrlTest_emptyHeader() throws Exception {
+    void getRedirectedUrlTest_emptyHeader() throws Exception {
         MockResponse mockResponse = new MockResponse();
         mockResponse.setResponseCode(HttpStatus.FOUND.value());
         mockWebServer.enqueue(mockResponse);
@@ -123,7 +123,7 @@ public class AmpTest {
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void getRedirectedUrlTest_nullResponse() {
+    void getRedirectedUrlTest_nullResponse() {
         RequestHeadersUriSpec requestHeadersUriSpec = mock(RequestHeadersUriSpec.class);
         RequestHeadersSpec requestHeadersSpec = mock(RequestHeadersSpec.class);
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);

@@ -5,7 +5,9 @@ dependencies {
     // Spring Framework
     api 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.retry:spring-retry'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
 
     // Apache Commons
     implementation 'org.apache.commons:commons-collections4'
