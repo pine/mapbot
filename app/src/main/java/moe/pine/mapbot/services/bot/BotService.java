@@ -64,12 +64,22 @@ public class BotService {
             return;
         }
 
-        if (StringUtils.isEmpty(messageEvent.getSubtype()) ||
-                Subtypes.THREAD_BROADCAST.equals(messageEvent.getSubtype())) {
+        final boolean isSentEvent =
+                StringUtils.isEmpty(messageEvent.getSubtype()) ||
+                        Subtypes.THREAD_BROADCAST.equals(messageEvent.getSubtype());
+        final boolean isChangedEvent =
+                Subtypes.MESSAGE_CHANGED.equals(messageEvent.getSubtype()) &&
+                        !Subtypes.TOMBSTONE.equals(messageEvent.getMessage().getSubtype());
+        final boolean isDeletedEvent =
+                Subtypes.MESSAGE_DELETED.equals(messageEvent.getSubtype()) ||
+                        Subtypes.MESSAGE_CHANGED.equals(messageEvent.getSubtype()) &&
+                                Subtypes.TOMBSTONE.equals(messageEvent.getMessage().getSubtype());
+
+        if (isSentEvent) {
             messageSentEventHandler.execute(messageEvent);
-        } else if (Subtypes.MESSAGE_CHANGED.equals(messageEvent.getSubtype())) {
+        } else if (isChangedEvent) {
             messageChangedEventHandler.execute(messageEvent);
-        } else if (Subtypes.MESSAGE_DELETED.equals(messageEvent.getSubtype())) {
+        } else if (isDeletedEvent) {
             messageDeletedEventHandler.execute(messageEvent);
         }
     }

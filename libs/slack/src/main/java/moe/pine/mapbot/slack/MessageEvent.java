@@ -14,6 +14,7 @@ public class MessageEvent implements Event {
         public static final String MESSAGE_CHANGED = "message_changed";
         public static final String MESSAGE_DELETED = "message_deleted";
         public static final String THREAD_BROADCAST = "thread_broadcast";
+        public static final String TOMBSTONE = "tombstone";
     }
 
     @Data

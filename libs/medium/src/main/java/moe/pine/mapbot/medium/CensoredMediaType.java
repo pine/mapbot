@@ -13,7 +13,7 @@ public class CensoredMediaType {
             MediaType.TEXT_HTML,
             MediaType.APPLICATION_XHTML_XML);
 
-    private final MediaType mediaType;
+    MediaType mediaType;
 
     public boolean isSupported() {
         return ALLOWED_MEDIA_TYPES.stream()
