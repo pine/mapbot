@@ -54,6 +54,10 @@ allprojects {
         options.compilerArgs << '-Xlint:unchecked'
         options.compilerArgs << '-Xlint:deprecation'
     }
+    
+    test {
+        useJUnitPlatform()
+    }
 
     configurations {
         implementation.exclude module: 'spring-boot-starter-tomcat'
