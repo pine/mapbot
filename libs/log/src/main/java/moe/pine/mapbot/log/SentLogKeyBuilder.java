@@ -7,9 +7,9 @@ class SentLogKeyBuilder {
 
     String buildKey(SentLogId sentLogId) {
         Objects.requireNonNull(sentLogId, "`sentLogId` is required.");
-        Objects.requireNonNull(sentLogId.getChannel(), "`channel` is required.");
-        Objects.requireNonNull(sentLogId.getSourceTs(), "`sourceTs` is required.");
+        Objects.requireNonNull(sentLogId.channel(), "`channel` is required.");
+        Objects.requireNonNull(sentLogId.sourceTs(), "`sourceTs` is required.");
 
-        return String.format(KEY_FORMAT, sentLogId.getChannel(), sentLogId.getSourceTs());
+        return String.format(KEY_FORMAT, sentLogId.channel(), sentLogId.sourceTs());
     }
 }
