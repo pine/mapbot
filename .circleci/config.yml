@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:16.0
+      - image: cimg/openjdk:16.0
       - image: redis
     working_directory: ~/repo
     environment:
