@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:11.0.2-jdk
+      - image: circleci/openjdk:16.0
       - image: redis
     working_directory: ~/repo
     environment:
@@ -40,6 +40,6 @@ jobs:
               retry -- heroku plugins:install java
               retry -- heroku deploy:jar \
                 --jar app/build/libs/app.jar \
-                --jdk 11 \
+                --jdk 16 \
                 --app $HEROKU_APP
             fi
