@@ -41,20 +41,20 @@ public class OutgoingMessageService {
         String query = String.format("%s (%s)", place.address(), place.name());
         String mapUrl = googleMap.generateSearchUrl(query);
 
-        return MappedPlace.builder()
-                .name(place.name())
-                .label(place.label())
-                .address(place.address())
-                .mapUrl(mapUrl)
-                .build();
+        return new MappedPlace(
+                place.name(),
+                place.label(),
+                place.address(),
+                mapUrl
+        );
     }
 
     private TextField convertToTextField(MappedPlace mappedPlace) {
         String messageText =
                 String.format(":round_pushpin: <%s|%s>",
-                        mappedPlace.getMapUrl(),
-                        mappedPlace.getAddress());
+                        mappedPlace.mapUrl(),
+                        mappedPlace.address());
 
-        return new TextField(mappedPlace.getLabel(), messageText);
+        return new TextField(mappedPlace.label(), messageText);
     }
 }
