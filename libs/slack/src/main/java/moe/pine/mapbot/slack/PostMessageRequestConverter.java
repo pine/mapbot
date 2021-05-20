@@ -10,26 +10,26 @@ import java.util.stream.Collectors;
 class PostMessageRequestConverter {
     ChatPostMessageRequest convert(PostMessageRequest postMessageRequest) {
         List<Field> fields =
-            postMessageRequest.getTextFields()
-                .stream()
-                .map(v -> Field.builder()
-                    .title(v.getTitle())
-                    .value(v.getValue())
-                    .build())
-                .collect(Collectors.toUnmodifiableList());
+                postMessageRequest.getTextFields()
+                        .stream()
+                        .map(v -> Field.builder()
+                                .title(v.title())
+                                .value(v.value())
+                                .build())
+                        .collect(Collectors.toUnmodifiableList());
 
         Attachment attachment =
-            Attachment.builder()
-                .fields(fields)
-                .build();
+                Attachment.builder()
+                        .fields(fields)
+                        .build();
 
         return ChatPostMessageRequest.builder()
-            .username(postMessageRequest.getUsername())
-            .threadTs(postMessageRequest.getThreadTs())
-            .channel(postMessageRequest.getChannel())
-            .attachments(List.of(attachment))
-            .iconUrl(postMessageRequest.getIconUrl())
-            .replyBroadcast(postMessageRequest.isReplyBroadcast())
-            .build();
+                .username(postMessageRequest.getUsername())
+                .threadTs(postMessageRequest.getThreadTs())
+                .channel(postMessageRequest.getChannel())
+                .attachments(List.of(attachment))
+                .iconUrl(postMessageRequest.getIconUrl())
+                .replyBroadcast(postMessageRequest.isReplyBroadcast())
+                .build();
     }
 }

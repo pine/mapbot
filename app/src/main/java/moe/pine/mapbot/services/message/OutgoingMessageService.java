@@ -38,13 +38,13 @@ public class OutgoingMessageService {
     }
 
     private MappedPlace convertToMappedPlace(Place place) {
-        String query = String.format("%s (%s)", place.getAddress(), place.getName());
+        String query = String.format("%s (%s)", place.address(), place.name());
         String mapUrl = googleMap.generateSearchUrl(query);
 
         return MappedPlace.builder()
-                .name(place.getName())
-                .label(place.getLabel())
-                .address(place.getAddress())
+                .name(place.name())
+                .label(place.label())
+                .address(place.address())
                 .mapUrl(mapUrl)
                 .build();
     }

@@ -16,8 +16,8 @@ class UpdateMessageRequestConverter {
                     updateMessageRequest.getTextFields()
                             .stream()
                             .map(v -> Field.builder()
-                                    .title(v.getTitle())
-                                    .value(v.getValue())
+                                    .title(v.title())
+                                    .value(v.value())
                                     .build())
                             .collect(Collectors.toUnmodifiableList());
 

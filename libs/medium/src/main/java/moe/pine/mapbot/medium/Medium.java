@@ -37,7 +37,7 @@ public class Medium {
 
         Browser.Context context = contextOpt.get();
         OgpMetadata ogpMetadata = browser.getOgpMetadata(context);
-        if (StringUtils.isBlank(ogpMetadata.getTitle())) {
+        if (StringUtils.isBlank(ogpMetadata.title())) {
             log.info("OGP title not found. [absolute-url={}, resolved-url={}]", absoluteUrl, resolvedUrl);
             return Optional.empty();
         }
@@ -64,7 +64,7 @@ public class Medium {
             return Optional.empty();
         }
 
-        Place place = new Place(name, ogpMetadata.getTitle(), address);
+        Place place = new Place(name, ogpMetadata.title(), address);
         return Optional.of(place);
     }
 }
