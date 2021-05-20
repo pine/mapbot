@@ -32,8 +32,8 @@ class MessageDeletedEventHandler {
         SentLog sentLog = sentLogOpt.get();
         DeleteMessageRequest deleteMessageRequest =
                 DeleteMessageRequest.builder()
-                        .channel(sentLog.getChannel())
-                        .ts(sentLog.getDestinationTs())
+                        .channel(sentLog.channel())
+                        .ts(sentLog.destinationTs())
                         .build();
         slackClient.deleteMessage(deleteMessageRequest);
     }

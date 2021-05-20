@@ -40,7 +40,7 @@ public class SentLogRepository {
     }
 
     public void add(SentLog sentLog) {
-        SentLogId sentLogId = new SentLogId(sentLog.getChannel(), sentLog.getSourceTs());
+        SentLogId sentLogId = new SentLogId(sentLog.channel(), sentLog.sourceTs());
         String key = sentLogKeyBuilder.buildKey(sentLogId);
         String value;
         try {

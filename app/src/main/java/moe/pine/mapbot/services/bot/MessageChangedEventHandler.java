@@ -2,11 +2,11 @@ package moe.pine.mapbot.services.bot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import moe.pine.mapbot.services.message.OutgoingMessageService;
 import moe.pine.mapbot.log.SentLog;
 import moe.pine.mapbot.log.SentLogId;
 import moe.pine.mapbot.log.SentLogRepository;
 import moe.pine.mapbot.properties.BotProperties;
+import moe.pine.mapbot.services.message.OutgoingMessageService;
 import moe.pine.mapbot.slack.MessageEvent;
 import moe.pine.mapbot.slack.SlackClient;
 import moe.pine.mapbot.slack.TextField;
@@ -46,9 +46,9 @@ class MessageChangedEventHandler {
         if (CollectionUtils.isEmpty(textFields)) {
             UpdateMessageRequest updateMessageRequest =
                     UpdateMessageRequest.builder()
-                            .channel(sentLog.getChannel())
+                            .channel(sentLog.channel())
                             .text(botProperties.getEditedMessage())
-                            .ts(sentLog.getDestinationTs())
+                            .ts(sentLog.destinationTs())
                             .build();
             slackClient.updateMessage(updateMessageRequest);
             return;
@@ -56,9 +56,9 @@ class MessageChangedEventHandler {
 
         UpdateMessageRequest updateMessageRequest =
                 UpdateMessageRequest.builder()
-                        .channel(sentLog.getChannel())
+                        .channel(sentLog.channel())
                         .textFields(textFields)
-                        .ts(sentLog.getDestinationTs())
+                        .ts(sentLog.destinationTs())
                         .build();
         slackClient.updateMessage(updateMessageRequest);
     }

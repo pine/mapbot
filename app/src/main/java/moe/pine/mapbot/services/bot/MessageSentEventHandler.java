@@ -45,11 +45,12 @@ class MessageSentEventHandler {
         PostMessageResponse postMessageResponse =
                 slackClient.postMessage(postMessageRequest);
 
-        SentLog sentLog = SentLog.builder()
-                .channel(messageEvent.getChannel())
-                .sourceTs(messageEvent.getTs())
-                .destinationTs(postMessageResponse.getTs())
-                .build();
+        SentLog sentLog =
+                new SentLog(
+                        messageEvent.getChannel(),
+                        messageEvent.getTs(),
+                        postMessageResponse.getTs()
+                );
         sentLogRepository.add(sentLog);
     }
 }
