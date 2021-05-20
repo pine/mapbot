@@ -41,7 +41,8 @@ public class Amp {
                 return getRedirectedUrl(absoluteUrl);
             } catch (RuntimeException e) {
                 throw new AmpException(
-                        String.format("Unable to get redirected URL. [retry-count=%d]", ctx.getRetryCount()), e);
+                        String.format("Unable to get redirected URL. [retry-count=%d]",
+                                ctx.getRetryCount()), e);
             }
         });
     }
@@ -61,7 +62,7 @@ public class Amp {
 
         return CollectionUtils.emptyIfNull(redirectHeaders)
                 .stream()
-                .findFirst()
-                .filter(StringUtils::isNotEmpty);
+                .filter(StringUtils::isNotEmpty)
+                .findFirst();
     }
 }
