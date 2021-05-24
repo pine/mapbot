@@ -2,7 +2,6 @@ buildscript {
     ext {
         springBootVersion = '2.5.0'
         kotlinVersion = '1.4.10'
-        okhttp3Version = '4.9.0'
     }
     repositories {
         mavenCentral()
@@ -59,7 +58,6 @@ allprojects {
         imports {
             mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
             mavenBom "org.jetbrains.kotlin:kotlin-bom:$kotlinVersion"
-
         }
         dependencies {
             dependency 'javax.servlet:javax.servlet-api:4.0.1'
@@ -82,10 +80,6 @@ allprojects {
             // My utilities
             dependency 'moe.pine:heroku-addons:0.3.3'
             dependency 'moe.pine:spring-cache-interceptors:0.2.0'
-
-            // Test
-            dependency "com.squareup.okhttp3:okhttp:$okhttp3Version"
-            dependency "com.squareup.okhttp3:mockwebserver:$okhttp3Version"
         }
     }
     dependencies {
