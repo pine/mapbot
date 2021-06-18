@@ -17,9 +17,6 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    // Servlet
-    compileOnly 'javax.servlet:javax.servlet-api'
-
     // Redis
     implementation 'io.lettuce:lettuce-core'
 
