@@ -9,7 +9,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
@@ -30,7 +29,7 @@ public class OutgoingMessageService {
                 .flatMap(this::convertToPlace)
                 .map(this::convertToMappedPlace)
                 .map(this::convertToTextField)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     private Stream<Place> convertToPlace(String absoluteUrl) {
