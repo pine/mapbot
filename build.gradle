@@ -78,6 +78,7 @@ allprojects {
             // My utilities
             dependency 'moe.pine:heroku-addons:0.3.3'
             dependency 'moe.pine:spring-cache-interceptors:0.2.0'
+            dependency 'moe.pine:reactor-interruptible:0.1.0'
         }
     }
     dependencies {

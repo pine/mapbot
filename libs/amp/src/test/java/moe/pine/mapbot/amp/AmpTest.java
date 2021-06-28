@@ -63,7 +63,7 @@ class AmpTest {
     }
 
     @Test
-    void resolveOriginalUrlTest_amp() {
+    void resolveOriginalUrlTest_amp() throws InterruptedException {
         String absoluteUrl = "https://www.google.co.jp/amp/s/s.tabelog.com/tokyo/A1304/A130401/13000809/top_amp/";
         doReturn(Optional.of("redirectedUrl")).when(amp).getRedirectedUrl(absoluteUrl);
 
@@ -76,7 +76,7 @@ class AmpTest {
     }
 
     @Test
-    void resolveOriginalUrlTest_maxRetry() {
+    void resolveOriginalUrlTest_maxRetry() throws InterruptedException {
         String absoluteUrl = "https://www.google.co.jp/amp/s/s.tabelog.com/tokyo/A1304/A130401/13000809/top_amp/";
         RetryTemplate retryTemplate = RetryTemplateFactory.create(5, 0L, 1.0, RuntimeException.class);
         Amp amp = spy(new Amp(webClient, retryTemplate));
@@ -123,7 +123,7 @@ class AmpTest {
 
     @Test
     @SuppressWarnings("rawtypes")
-    void getRedirectedUrlTest_nullResponse() {
+    void getRedirectedUrlTest_nullResponse() throws InterruptedException {
         RequestHeadersUriSpec requestHeadersUriSpec = mock(RequestHeadersUriSpec.class);
         RequestHeadersSpec requestHeadersSpec = mock(RequestHeadersSpec.class);
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);

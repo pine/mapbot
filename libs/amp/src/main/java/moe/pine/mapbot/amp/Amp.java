@@ -1,6 +1,7 @@
 package moe.pine.mapbot.amp;
 
 import moe.pine.mapbot.retry_support.RetryTemplateFactory;
+import moe.pine.reactor.interruptible.MonoUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -36,24 +37,28 @@ public class Amp {
             return Optional.empty();
         }
 
-        return retryTemplate.execute(ctx -> {
-            try {
-                return getRedirectedUrl(absoluteUrl);
-            } catch (RuntimeException e) {
-                throw new AmpException(
-                        String.format("Unable to get redirected URL. [retry-count=%d]",
-                                ctx.getRetryCount()), e);
-            }
-        });
+        try {
+            return retryTemplate.execute(ctx -> {
+                try {
+                    return getRedirectedUrl(absoluteUrl);
+                } catch (RuntimeException e) {
+                    throw new AmpException(
+                            String.format("Unable to get redirected URL. [retry-count=%d]",
+                                    ctx.getRetryCount()), e);
+                }
+            });
+        } catch (InterruptedException e) {
+            throw new AmpInterruptedException(e);
+        }
     }
 
-    protected Optional<String> getRedirectedUrl(String absoluteUrl) {
+    protected Optional<String> getRedirectedUrl(String absoluteUrl) throws InterruptedException {
         ResponseEntity<Void> responseEntity =
-                webClient.get()
-                        .uri(absoluteUrl)
-                        .retrieve()
-                        .toBodilessEntity()
-                        .block(BLOCK_TIMEOUT);
+                MonoUtils.block(
+                        webClient.get()
+                                .uri(absoluteUrl)
+                                .retrieve()
+                                .toBodilessEntity(), BLOCK_TIMEOUT);
         if (responseEntity == null) {
             return Optional.empty();
         }
