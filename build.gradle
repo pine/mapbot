@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.5.1'
+        springBootVersion = '2.5.5'
         kotlinVersion = '1.4.10'
     }
     repositories {
@@ -38,8 +38,8 @@ allprojects {
         maven { url 'https://repo.spring.io/milestone' }
     }
 
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     compileJava {
         options.encoding = 'UTF-8'

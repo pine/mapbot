@@ -2,11 +2,11 @@
 :world_map: Google Maps bot
 
 ## Requirements
-- Java 16 or later
+- Java 17
 - Redis
 
 ## Libraries
-- Spring Boot 2.x
+- Spring Boot 2
 
 ### Deployment
 
@@ -22,7 +22,7 @@ $ heroku addons:create heroku-redis:hobby-dev
 # Deploy JAR file
 $ ./gradlew build
 $ heroku plugins:install java
-$ heroku deploy:jar --jar app/build/libs/app.jar --jdk 16
+$ heroku deploy:jar --jar app/build/libs/app.jar --jdk 17
 ```
 
 ## License

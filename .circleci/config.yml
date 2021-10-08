@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cimg/openjdk:16.0
+      - image: cimg/openjdk:17.0.0
       - image: redis
     working_directory: ~/repo
     environment:
@@ -40,6 +40,6 @@ jobs:
               retry -- heroku plugins:install java
               retry -- heroku deploy:jar \
                 --jar app/build/libs/app.jar \
-                --jdk 16 \
+                --jdk 17 \
                 --app $HEROKU_APP
             fi
